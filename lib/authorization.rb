@@ -1,6 +1,5 @@
 require 'exceptions'
 require 'parser'
-require 'metaid'
 
 module Authorization
   module Base
