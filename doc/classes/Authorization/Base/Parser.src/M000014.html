@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>parse_not (Authorization::Base::Parser)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File lib/parser.rb, line 45</span>
+      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">parse_not</span>( <span class="ruby-identifier">str</span> )
+        <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">str</span> <span class="ruby-operator">=~</span> <span class="ruby-regexp re">/^not\s+(.+)$/</span> 
+          <span class="ruby-identifier">can_parse</span> = <span class="ruby-identifier">parse_term</span>( <span class="ruby-identifier">$1</span> )
+          <span class="ruby-ivar">@stack</span>.<span class="ruby-identifier">push</span>( <span class="ruby-operator">!</span><span class="ruby-ivar">@stack</span>.<span class="ruby-identifier">pop</span> ) <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">can_parse</span>
+        <span class="ruby-keyword kw">else</span>
+          <span class="ruby-identifier">can_parse</span> = <span class="ruby-keyword kw">false</span>
+        <span class="ruby-keyword kw">end</span>
+        <span class="ruby-identifier">can_parse</span>
+      <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

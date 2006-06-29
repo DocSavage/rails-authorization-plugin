@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>permit (Authorization::Base::ControllerInstanceMethods)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File lib/authorization.rb, line 39</span>
+      <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">permit</span>( <span class="ruby-identifier">authorization_expression</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">args</span> )
+        <span class="ruby-ivar">@options</span> = { <span class="ruby-identifier">:allow_guests</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-keyword kw">false</span>, <span class="ruby-identifier">:redirect</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-keyword kw">true</span> }
+        <span class="ruby-ivar">@options</span>.<span class="ruby-identifier">merge!</span>( <span class="ruby-identifier">args</span>.<span class="ruby-identifier">last</span>.<span class="ruby-identifier">is_a?</span>( <span class="ruby-constant">Hash</span> ) <span class="ruby-operator">?</span> <span class="ruby-identifier">args</span>.<span class="ruby-identifier">last</span> <span class="ruby-operator">:</span> {} )
+        
+        <span class="ruby-ivar">@current_user</span> = <span class="ruby-identifier">get_user</span>
+        <span class="ruby-keyword kw">if</span> <span class="ruby-keyword kw">not</span> <span class="ruby-ivar">@options</span>[<span class="ruby-identifier">:allow_guests</span>]
+          <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@current_user</span>.<span class="ruby-identifier">nil?</span>  <span class="ruby-comment cmt"># We aren't logged in, or an exception has already been raised</span>
+            <span class="ruby-identifier">handle_redirection</span> <span class="ruby-keyword kw">if</span> <span class="ruby-ivar">@options</span>[<span class="ruby-identifier">:redirect</span>]
+            <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">false</span>
+          <span class="ruby-keyword kw">elsif</span> <span class="ruby-keyword kw">not</span> <span class="ruby-ivar">@current_user</span>.<span class="ruby-identifier">respond_to?</span> <span class="ruby-identifier">:id</span>
+            <span class="ruby-identifier">raise</span>( <span class="ruby-constant">UserDoesntImplementID</span>, <span class="ruby-value str">&quot;User doesn't implement #id&quot;</span>)
+            <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">false</span>
+          <span class="ruby-keyword kw">elsif</span> <span class="ruby-keyword kw">not</span> <span class="ruby-ivar">@current_user</span>.<span class="ruby-identifier">respond_to?</span> <span class="ruby-identifier">:has_role?</span>
+            <span class="ruby-identifier">raise</span>( <span class="ruby-constant">UserDoesntImplementRoles</span>, <span class="ruby-value str">&quot;User doesn't implement #has_role?&quot;</span> )
+            <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">false</span>
+          <span class="ruby-keyword kw">end</span>
+        <span class="ruby-keyword kw">end</span>
+        
+        <span class="ruby-comment cmt"># Parse and evaluate the authorization expression</span>
+        <span class="ruby-identifier">has_permission</span> = <span class="ruby-identifier">parse_authorization_expression</span>( <span class="ruby-identifier">authorization_expression</span> )
+        <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">has_permission</span>
+          <span class="ruby-keyword kw">yield</span> <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">block_given?</span>
+        <span class="ruby-keyword kw">elsif</span> <span class="ruby-ivar">@options</span>[<span class="ruby-identifier">:redirect</span>]
+          <span class="ruby-identifier">handle_redirection</span>
+        <span class="ruby-keyword kw">end</span>
+        <span class="ruby-identifier">has_permission</span>
+      <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

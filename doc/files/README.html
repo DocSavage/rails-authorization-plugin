@@ -1,0 +1,427 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>File: README</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <link rel="stylesheet" href=".././rdoc-style.css" type="text/css" media="screen" />
+  <script type="text/javascript">
+  // <![CDATA[
+
+  function popupCode( url ) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+    
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  
+  // ]]>
+  </script>
+
+</head>
+<body>
+
+
+
+  <div id="fileHeader">
+    <h1>README</h1>
+    <table class="header-table">
+    <tr class="top-aligned-row">
+      <td><strong>Path:</strong></td>
+      <td>README
+      </td>
+    </tr>
+    <tr class="top-aligned-row">
+      <td><strong>Last Update:</strong></td>
+      <td>Wed Jun 21 18:30:52 PDT 2006</td>
+    </tr>
+    </table>
+  </div>
+  <!-- banner header -->
+
+  <div id="bodyContent">
+
+
+
+  <div id="contextContent">
+
+    <div id="description">
+      <h1>Authorization plugin</h1>
+<p>
+Version 1.0 rc1 June 21, 2006
+</p>
+<p>
+<a
+href="http://www.writertopia.com/developers/authorization">www.writertopia.com/developers/authorization</a>
+</p>
+<p>
+This plugin provides a flexible way to add authorization to Rails.
+</p>
+<p>
+The authorization process decides whether a user is allowed access to some
+feature. It is distinct from the authentication process, which tries to
+confirm a user is authentic, not an imposter. There are many authentication
+systems available for Rails, e.g., acts_as_authenticated and UserEngine.
+This authorization system will play nicely with them as long as some simple
+requirements are met:
+</p>
+<ol>
+<li>User objects are available that implement a <tt>has_role?(role,
+authorizable_object = nil)</tt> method. This requirement can be easily
+handled by using <tt>acts_as_authorized_user</tt> in the User-like class.
+
+</li>
+<li>If you want to use &quot;role of :model&quot; authorization expressions,
+like &quot;owner of :resource&quot; or &quot;eligible for :award&quot;,
+then your models with roles must implement an <tt>accepts_role?(role,
+user)</tt> method. This requirement can be handled by using
+<tt>acts_as_authorizable</tt> in the model class.
+
+</li>
+</ol>
+<p>
+Change the constants at the top of lib/authorization.rb to set your
+authentication system&#8217;s login page and method for storing the current
+URL for return after authentication.
+</p>
+<h2>Steps in using the plugin</h2>
+<ol>
+<li>At the top of your config/environment.rb create an AUTHORIZATION_MIXIN
+constant and set it to &quot;object roles&quot; or &quot;hardwired&quot;.
+See init.rb in this plugins.
+
+</li>
+<li>Depending on the mixin you use, create a migration to add the necessary
+database tables. If you use the &quot;hardwired&quot; mixin, no database
+use is required. Otherwise, you&#8217;ll have to add a <tt>roles_users</tt>
+and <tt>roles</tt> table. Sample migrations are provided at the top of each
+mixin (e.g., object_roles_table.rb)
+
+</li>
+<li>Make sure your application provides the following: (a) current_user method
+or something that returns the current user object. (b) the login page url
+hash is set in authorization.rb under the constant
+DEFAULT_REDIRECTION_HASH.
+
+</li>
+<li>Add <tt>acts_as_authorized_user</tt> to your user class.
+
+</li>
+<li>Add <tt>acts_as_authorizable</tt> to the models you want to query for
+roles.
+
+</li>
+</ol>
+<h2>Jumpstarting with a mixin</h2>
+<p>
+The Authorization plugin comes with three modules that provide different
+levels of database support. Each of the mixins provide the
+&quot;acts_as_authorized_user&quot; and &quot;acts_as_authorizable&quot;
+class methods for your models. If you use one of those declarations, you
+get methods that handle authorization with different database schemes. A
+full test web application is provided for each of the modules so you can
+see how they work.
+</p>
+<h3>1) Hardwired Roles</h3>
+<p>
+This is the simplest and requires no database. Roles are assumed to be
+coded into the Model classes using the <tt>has_role?(role, obj = nil)</tt>
+method.
+</p>
+<h3>2) Simple Roles Table</h3>
+<p>
+Roles have a has_and_belongs_to_many (habtm) relationship with Users. Roles
+have string names and are not associated with any model instances. Because
+roles aren&#8217;t associated with any model instance, this mixin
+can&#8217;t support &quot;role of :model&quot; authorization expressions
+through the database. You can, however, support those expressions by
+writing code in models&#8217; <tt>has_role?</tt> methods.
+</p>
+<h3>3) Object Roles Table</h3>
+<p>
+The Object Roles Table mixin provides full support for authorization
+expressions within a database by add a polymorphic field to the <a
+href="../classes/Role.html">Role</a> table. Because roles have polymorphic
+associations to an authorizable object, we can assign a user to a role for
+any model instance. So you could declare user X to be a moderator for
+workshop Y, or you could make user A be the owner of resource B.
+</p>
+<p>
+Each mixin&#8217;s test web application comes with migrations to set up the
+database for the associated mixin. After reading the Rails Recipe on domain
+specific languages (DSLs) for testing, I added integration tests for each
+mixin test app that use a simple vocabulary for testing authorization.
+</p>
+<h2>The Specifics</h2>
+<h3>permit and permit?</h3>
+<p>
+permit and permit? take an authorization expression and a hash of options
+that typically includes any objects that need to be queried:
+</p>
+<pre>
+  permit &lt;authorization expression&gt; [, options hash ]
+  permit? &lt;authorization expression&gt; [, options hash ]
+</pre>
+<p>
+The difference between permit and permit? is redirection. permit is a
+declarative statement and redirects by default. It can also be used as a
+class or an instance method, gating the access to an entire controller in a
+before_filter fashion.
+</p>
+<p>
+permit? is only an instance method, can be used within expressions, does
+not redirect by default.
+</p>
+<p>
+The authorization expression is a boolean expression made up of permitted
+roles, prepositions, and authorizable models. Examples include
+&quot;admin&quot; (User model assumed), &quot;moderator of :workshop&quot;
+(looks at options hash and then @workshop), &quot;&#8217;top
+salesman&#8217; at :company&quot; (multiword roles delimited by single
+quotes), or &quot;scheduled for Exam&quot; (queries class method of Exam).
+</p>
+<p>
+Note that we can use several permitted prepositions (of, for, by, to, at).
+In the discussion below, we assume you use the &quot;of&quot; preposition.
+You can modify the permitted prepositions by changing the constant in <a
+href="../classes/Authorization/Base/Parser.html">Authorization::Base::Parser</a>.
+</p>
+<ul>
+<li>If a specified role has no &quot;of &lt;model&gt;&quot; designation, we
+assume it is a user role (i.e., the model is the user-like object).
+
+</li>
+<li>If an &quot;of :model&quot; designation is given but no &quot;:model&quot;
+key/value is supplied in the hash, we check if an instance variable @model
+if it&#8217;s available.
+
+</li>
+<li>If the model has no preceding colon, we assume it&#8217;s a class and query
+Model#self.accepts_role? (the class method) for the permission.
+
+</li>
+</ul>
+<p>
+(Currently only available in ObjectRolesTable mixin.)
+</p>
+<p>
+For each role, a query is sent to the appropriate model object.
+</p>
+<p>
+The grammar for the authorization expression is:
+</p>
+<pre>
+               &lt;expr&gt; ::= &lt;term&gt; | not &lt;term&gt; | &lt;term&gt; or &lt;expr&gt; | &lt;term&gt; and &lt;expr&gt;
+               &lt;term&gt; ::= (&lt;expr&gt;) | &lt;role&gt; | &lt;role&gt; &lt;preposition&gt; &lt;model&gt;
+        &lt;preposition&gt; ::= of | for | by | to | at
+              &lt;model&gt; ::= /:\w+/ | /\w+/
+               &lt;role&gt; ::= /\w+/ | /'.+'/
+</pre>
+<p>
+Parentheses should be used to clarify permissions. The expression &quot;a
+or b and c or d&quot; gets parsed like &quot;a or (b and (c or d))&quot;
+</p>
+<h4>Options</h4>
+<p>
+<tt>:allow_guests =&gt; false</tt>. We can allow permission processing
+without a current user object. The default is <tt>false</tt>.
+</p>
+<p>
+<tt>:user</tt> =&gt; A <tt>user</tt> object.
+</p>
+<p>
+<tt>:get_user_method =&gt; method</tt> that will return a <tt>user</tt>
+object. Default is <tt>current_user</tt>, which is the how
+<tt>acts_as_authenticated</tt> works.
+</p>
+<p>
+<tt>:only =&gt; [ :method1, :method2 ]</tt>. Array of methods to apply
+permit (not valid when used in instance methods)
+</p>
+<p>
+<tt>:except =&gt; [ :method1, :method2 ]</tt>. Array of methods that
+won&#8217;t have permission checking (not valid when used in instance
+methods)
+</p>
+<p>
+<tt>:redirect =&gt; bool</tt>. default is <tt>true</tt>. If <tt>false</tt>,
+permit will not redirect to denied page.
+</p>
+<p>
+<tt>:redirect_action =&gt; action</tt> that handles authorization failure
+(default is &#8216;account&#8217;)
+</p>
+<p>
+<tt>:redirect_controller =&gt; controller</tt> that handles authorization
+failure (default is &#8216;denied&#8217;)
+</p>
+<h3>Setting the roles</h3>
+<p>
+Roles are set by has_role and accepts_role methods that are mixed into the
+User-like object and the authorizable models. User objects can set roles
+and optionally an object scope for that role:
+</p>
+<pre>
+        user.has_role 'site_admin'
+        user.has_role 'moderator', workshop
+        user.has_no_role 'site_admin'
+        user.has_no_role 'moderator', workshop
+</pre>
+<p>
+(TODO: Add full support for class scope by passing in a Class instead of an
+model instance.)
+</p>
+<p>
+Models set roles for specific users:
+</p>
+<pre>
+        a_model.accepts_role 'moderator', user
+        a_model.accepts_no_role 'moderator', user
+</pre>
+<p>
+The method language has been chosen to aid memory of the argument order. A
+user has a role &quot;foo&quot;, so the role string immediately follows
+has_role. Similarly, a model accepts a role &quot;foo&quot;, so the role
+string immediately follows accepts_role. Then we append the scope.
+</p>
+<p>
+Sometimes the user-like object might be an authorizable object as well, for
+example, when you allow &#8216;friend&#8217; roles for users.
+</p>
+<h3>Pattern of use</h3>
+<p>
+We expect the application to provide the following methods:
+</p>
+<h4>current_user</h4>
+<p>
+Returns some user object, like an instance of my favorite class,
+<tt>UserFromMars</tt>. A <tt>user</tt> object, from the Authorization
+viewpoint, is simply an object that provides a has_role? method.
+</p>
+<p>
+Note that duck typing means we don&#8217;t care what else the
+<tt>UserFromMars</tt> might be doing. We only care that we can get an id
+from whatever it is, and we can check if a given role string is associated
+with it. By using <tt>acts_as_authorized_user</tt>, we inject what we need
+into the user object.
+</p>
+<p>
+If you use an authorization expression &quot;admin of :foo&quot;, we check
+permission by asking <tt>foo</tt> if it
+<tt>accepts_role?(&#8216;admin&#8217;, user)</tt>. So for each model that
+is used in an expression, we assume that it provides the
+<tt>accepts_role?(role, user)</tt> method.
+</p>
+<p>
+Note that <tt>user</tt> can be <tt>nil</tt> if <tt>:allow_guests =&gt;
+true</tt>.
+</p>
+<h4>store_return_location (optional)</h4>
+<p>
+This method will be called if authorization fails and the user is about to
+be redirected to the login action. This allows the application to return to
+the desired page after login. If the application doesn&#8217;t provide this
+method, the method will not be called.
+</p>
+<p>
+The name of the method for storing a location can be modified by changing
+the constant STORE_LOCATION_METHOD in authorization.rb. Also, the default
+login page is defined by the constant DEFAULT_REDIRECTION_HASH in
+authorization.rb. I&#8217;ll probably have a better constant setting method
+so the plugin can remain intact.
+</p>
+<h3>Conventions</h3>
+<p>
+Roles specified without the &quot;of :model&quot; designation:
+</p>
+<ol>
+<li>We see if there is a <tt>current_user</tt> method available that will
+return a user object. This method can be overridden with the <tt>:user</tt>
+hash.
+
+</li>
+<li>Once a user object is determined, we pass the role to userhas_role? and
+expect a true return value if the user has the given role.
+
+</li>
+</ol>
+<p>
+Roles specified with &quot;of :model&quot; designation:
+</p>
+<ol>
+<li>We attempt to query an object in the options hash that has a matching key.
+Example: <tt>permit &quot;knight for :justice&quot;, :justice =&gt;
+@abstract_idea</tt>
+
+</li>
+<li>If there is no object with a matching key, we see if there&#8217;s a
+matching instance variable. Example: @meeting defined before we use
+<tt>permit &quot;moderator of :meeting&quot;</tt>
+
+</li>
+<li>Once the model object is determined, we pass the role and user (determined
+in the manner above) to modelaccepts_role?
+
+</li>
+</ol>
+<h3>More information</h3>
+<p>
+Information on this plugin and other development can be found at <a
+href="http://www.writertopia.com/developers">www.writertopia.com/developers</a>
+</p>
+
+    </div>
+
+
+   </div>
+
+
+  </div>
+
+
+    <!-- if includes -->
+
+    <div id="section">
+
+
+
+
+
+      
+
+
+    <!-- if method_list -->
+
+
+  </div>
+
+
+<div id="validator-badges">
+  <p><small><a href="http://validator.w3.org/check/referer">[Validate]</a></small></p>
+</div>
+
+</body>
+</html>

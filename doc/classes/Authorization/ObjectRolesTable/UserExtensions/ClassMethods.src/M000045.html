@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>acts_as_authorized_user (Authorization::ObjectRolesTable::UserExtensions::ClassMethods)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../../../../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File lib/object_roles_table.rb, line 32</span>
+        <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">acts_as_authorized_user</span>
+          <span class="ruby-identifier">has_and_belongs_to_many</span> <span class="ruby-identifier">:roles</span>
+          <span class="ruby-identifier">include</span> <span class="ruby-constant">Authorization</span><span class="ruby-operator">::</span><span class="ruby-constant">ObjectRolesTable</span><span class="ruby-operator">::</span><span class="ruby-constant">UserExtensions</span><span class="ruby-operator">::</span><span class="ruby-constant">InstanceMethods</span>
+          <span class="ruby-comment cmt"># if membership plugin is available, slurp it in</span>
+        <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>
