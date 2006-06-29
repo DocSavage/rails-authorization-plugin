@@ -10,10 +10,12 @@
   <link rel="stylesheet" href="../../.././rdoc-style.css" type="text/css" media="screen" />
 </head>
 <body class="standalone-code">
-  <pre><span class="ruby-comment cmt"># File lib/authorization.rb, line 11</span>
-    <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">included</span>( <span class="ruby-identifier">recipient</span> )     
+  <pre><span class="ruby-comment cmt"># File lib/authorization.rb, line 12</span>
+    <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">included</span>( <span class="ruby-identifier">recipient</span> )
       <span class="ruby-identifier">recipient</span>.<span class="ruby-identifier">extend</span>( <span class="ruby-constant">ControllerClassMethods</span> )
-      <span class="ruby-identifier">include</span> <span class="ruby-constant">Authorization</span><span class="ruby-operator">::</span><span class="ruby-constant">Base</span><span class="ruby-operator">::</span><span class="ruby-constant">ControllerInstanceMethods</span>
+      <span class="ruby-identifier">recipient</span>.<span class="ruby-identifier">class_eval</span> <span class="ruby-keyword kw">do</span>
+        <span class="ruby-identifier">include</span> <span class="ruby-constant">ControllerInstanceMethods</span>
+      <span class="ruby-keyword kw">end</span>
     <span class="ruby-keyword kw">end</span></pre>
 </body>
 </html>

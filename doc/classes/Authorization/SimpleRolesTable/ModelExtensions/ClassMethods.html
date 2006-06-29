@@ -80,7 +80,10 @@
       <h3 class="section-bar">Methods</h3>
 
       <div class="name-list">
-      <a href="#M000027">acts_as_authorizable</a>&nbsp;&nbsp;
+      <a href="#M000034">accepts_no_role</a>&nbsp;&nbsp;
+      <a href="#M000033">accepts_role</a>&nbsp;&nbsp;
+      <a href="#M000032">accepts_role?</a>&nbsp;&nbsp;
+      <a href="#M000031">acts_as_authorizable</a>&nbsp;&nbsp;
       </div>
     </div>
 
@@ -109,12 +112,59 @@
     <div id="methods">
       <h3 class="section-bar">Public Instance methods</h3>
 
-      <div id="method-M000027" class="method-detail">
-        <a name="M000027"></a>
+      <div id="method-M000034" class="method-detail">
+        <a name="M000034"></a>
 
         <div class="method-heading">
-          <a href="ClassMethods.src/M000027.html" target="Code" class="method-signature"
-            onclick="popupCode('ClassMethods.src/M000027.html');return false;">
+          <a href="ClassMethods.src/M000034.html" target="Code" class="method-signature"
+            onclick="popupCode('ClassMethods.src/M000034.html');return false;">
+          <span class="method-name">accepts_no_role</span><span class="method-args">( role, user )</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+        </div>
+      </div>
+
+      <div id="method-M000033" class="method-detail">
+        <a name="M000033"></a>
+
+        <div class="method-heading">
+          <a href="ClassMethods.src/M000033.html" target="Code" class="method-signature"
+            onclick="popupCode('ClassMethods.src/M000033.html');return false;">
+          <span class="method-name">accepts_role</span><span class="method-args">( role, user )</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+        </div>
+      </div>
+
+      <div id="method-M000032" class="method-detail">
+        <a name="M000032"></a>
+
+        <div class="method-heading">
+          <a href="ClassMethods.src/M000032.html" target="Code" class="method-signature"
+            onclick="popupCode('ClassMethods.src/M000032.html');return false;">
+          <span class="method-name">accepts_role?</span><span class="method-args">( role_name, user )</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+We don&#8217;t really have to define habtm relationship from <a
+href="../../../Role.html">Role</a> to User-like object because we
+don&#8217;t need it for authorization
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000031" class="method-detail">
+        <a name="M000031"></a>
+
+        <div class="method-heading">
+          <a href="ClassMethods.src/M000031.html" target="Code" class="method-signature"
+            onclick="popupCode('ClassMethods.src/M000031.html');return false;">
           <span class="method-name">acts_as_authorizable</span><span class="method-args">()</span>
           </a>
         </div>

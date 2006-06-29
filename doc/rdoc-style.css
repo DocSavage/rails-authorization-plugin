@@ -8,12 +8,6 @@ body {
     background: white;
 }
 
-tt, pre {
-	font-family: Courier;
-	font-size: 100%;
-	color: #Å360;
-}
-
 h1,h2,h3,h4 { margin: 0; color: #efefef; background: transparent; }
 h1 { font-size: 150%; }
 h2,h3,h4 { margin-top: 1em; }
