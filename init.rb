@@ -9,7 +9,7 @@ ActionView::Base.send( :include, Authorization::Base::ControllerInstanceMethods 
 
 # When used with the auth_test app, we define this in config/environment.rb
 # AUTHORIZATION_MIXIN = "hardwired"
-if not Object.constants.include? AUTHORIZATION_MIXIN
+if not Object.constants.include? "AUTHORIZATION_MIXIN"
   AUTHORIZATION_MIXIN = "object roles"
 end
 
