@@ -34,7 +34,8 @@ The Authorization plugin comes with three modules that provide different levels 
 Each of the mixins provide the "acts_as_authorized_user" and "acts_as_authorizable" class methods
 for your models. If you use one of those declarations, you get methods that handle authorization
 with different database schemes. A full test web application is provided for each of the modules
-so you can see how they work.
+so you can see how they work. The "Object Roles Table" version is recommended for normal use and
+is the default. The other mixins are provided for pedagogical reasons.
 
 === 1) Hardwired Roles
 
@@ -94,14 +95,15 @@ For each role, a query is sent to the appropriate model object.
 
 The grammar for the authorization expression is:
 
-	       <expr> ::= <term> | not <term> | <term> or <expr> | <term> and <expr>
-	       <term> ::= (<expr>) | <role> | <role> <preposition> <model>
-	<preposition> ::= of | for | by | to | at
-	      <model> ::= /:\w+/ | /\w+/
-	       <role> ::= /\w+/ | /'.+'/
-
+             <expr> ::= (<expr>) | not <expr> | <term> or <expr> | <term> and <expr> | <term>
+             <term> ::= <role> | <role> <preposition> <model>
+      <preposition> ::= of | for | in | on | to | at | by
+            <model> ::= /:\w+/
+             <role> ::= /\w+/ | /'.*'/
+		
 Parentheses should be used to clarify permissions. 
-The expression "a or b and c or d" gets parsed like "a or (b and (c or d))"
+The expression "a or b and c or d" gets parsed like "a or (b and (c or d))" if you use the RecursiveDescentParser mixin.
+(The EvalParser uses Ruby's eval and presumably won't suffer from this parsing issue.)
 
 ==== Options
 
@@ -145,6 +147,15 @@ the role string immediately follows accepts_role. Then we append the scope.
 
 Sometimes the user-like object might be an authorizable object as well, for example, when you 
 allow 'friend' roles for users.
+
+The Object Roles Table mixin version includes some dynamic methods that use the roles table.
+For example, if you have roles like "eligible", "moderator", and "owner", you'll be able to
+use the following:
+
+user.is_eligible_for_what   # --> returns array of authorizable objects for which user has role "eligible"
+user.is_moderator_of? workshop  # --> returns true/false
+user.is_moderator_of workshop   # --> sets user to have role "moderator" for object workshop.
+user.is_administrator  # --> sets user to have role "administrator" not really tied to any object.
 
 === Pattern of use
 

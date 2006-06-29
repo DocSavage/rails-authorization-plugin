@@ -1,5 +1,4 @@
 require 'exceptions'
-require 'metaid'
 
 # In order to use this mixin, you'll need the following:
 # 1. A Role class with proper associations (habtm to User-like class)

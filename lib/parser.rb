@@ -4,7 +4,7 @@ module Authorization
       # Parses and evaluates an authorization expression and returns <tt>true</tt> or <tt>false</tt>.
       #
       # The authorization expression is defined by the following grammar:
-      #         <expr> ::= (<expr>) | not <p_expr> | <term> or <expr> | <term> and <expr> | <term>
+      #         <expr> ::= (<expr>) | not <expr> | <term> or <expr> | <term> and <expr> | <term>
       #         <term> ::= <role> | <role> <preposition> <model>
       #  <preposition> ::= of | for | in | on | to | at | by
       #        <model> ::= /:\w+/
