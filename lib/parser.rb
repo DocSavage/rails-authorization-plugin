@@ -1,5 +1,10 @@
 module Authorization
   module Base
+    
+    VALID_PREPOSITIONS = ['of', 'for', 'in', 'on', 'to', 'at', 'by']
+    BOOLEAN_OPS = ['not', 'or', 'and']
+    VALID_PREPOSITIONS_PATTERN = VALID_PREPOSITIONS.join('|')
+        
     module EvalParser
       # Parses and evaluates an authorization expression and returns <tt>true</tt> or <tt>false</tt>.
       #
@@ -22,9 +27,6 @@ module Authorization
       # 1) Replace all <role> <preposition> <model> matches.
       # 2) Replace all <role> matches that aren't one of our other terminals ('not', 'or', 'and', or preposition)
       # 3) Eval
-      
-      VALID_PREPOSITIONS = ['of', 'for', 'in', 'on', 'to', 'at', 'by']
-      BOOLEAN_OPS = ['not', 'or', 'and']
       
       def parse_authorization_expression( str )
         if str =~ /[^A-Za-z0-9_:'\(\)\s]/
@@ -108,8 +110,6 @@ module Authorization
     # and doesn't allow arbitrary nesting of parentheses. It supports up to 5 levels of nesting.
     module RecursiveDescentParser
       
-      VALID_PREPOSITIONS = 'of|for|in|on|to|at|by'
-      
       OPT_PARENTHESES_PATTERN = '(([^()]|\(([^()]|\(([^()]|\(([^()]|\(([^()]|\(([^()])*\))*\))*\))*\))*\))*)'
       PARENTHESES_PATTERN = '\(' + OPT_PARENTHESES_PATTERN + '\)'
       NOT_PATTERN = '^\s*not\s+' + OPT_PARENTHESES_PATTERN + '$'
@@ -123,7 +123,7 @@ module Authorization
       AND_REGEX = Regexp.new(AND_PATTERN)
       OR_REGEX = Regexp.new(OR_PATTERN)
       ROLE_REGEX = Regexp.new('^\s*' + ROLE_PATTERN + '\s*$')
-      ROLE_OF_MODEL_REGEX = Regexp.new('^\s*' + ROLE_PATTERN + '\s+(' + VALID_PREPOSITIONS + ')\s+' + MODEL_PATTERN + '\s*$')
+      ROLE_OF_MODEL_REGEX = Regexp.new('^\s*' + ROLE_PATTERN + '\s+(' + VALID_PREPOSITIONS_PATTERN + ')\s+' + MODEL_PATTERN + '\s*$')
         
       def parse_authorization_expression( str )
         @stack = []

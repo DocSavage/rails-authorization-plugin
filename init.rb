@@ -29,10 +29,8 @@ case AUTHORIZATION_MIXIN
     )
   when "object roles"
     require File.dirname(__FILE__) + '/lib/object_roles_table'
-    require File.dirname(__FILE__) + '/lib/identity'              # Dynamic methods on the roles table (see identity.rb)
     ActiveRecord::Base.send( :include, 
       Authorization::ObjectRolesTable::UserExtensions, 
-      Authorization::ObjectRolesTable::ModelExtensions,
-      Identity::Base::InstanceMethods
+      Authorization::ObjectRolesTable::ModelExtensions
     )
 end

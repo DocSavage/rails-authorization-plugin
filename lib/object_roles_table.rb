@@ -1,4 +1,5 @@
 require 'exceptions'
+require 'identity'
 
 # In order to use this mixin, you'll need the following:
 # 1. A Role class with proper associations (habtm to User-like class)
@@ -32,14 +33,19 @@ module Authorization
         def acts_as_authorized_user
           has_and_belongs_to_many :roles
           include Authorization::ObjectRolesTable::UserExtensions::InstanceMethods
+          include Authorization::Identity::UserExtensions::InstanceMethods   # Provides all kinds of dynamic sugar via method_missing
         end
       end
       
       module InstanceMethods
         # If roles aren't explicitly defined in user class then check roles table
         def has_role?( role_name, authorizable_obj = nil )
-          role = get_role( role_name, authorizable_obj )
-          self.roles.include? role
+          if authorizable_obj.nil?
+            self.roles.find_by_name( role_name ) ? true : false    # If we ask a general role question, return true if any role is defined.
+          else
+            role = get_role( role_name, authorizable_obj )
+            self.roles.include? role
+          end
         end
         
         def has_role( role_name, authorizable_obj = nil )
@@ -60,7 +66,7 @@ module Authorization
           role = get_role( role_name, authorizable_obj )
           if role
             self.roles.delete( role )
-            #role.destroy if role.users.empty?
+            role.destroy if role.users.empty?
           end
         end
 
@@ -90,8 +96,7 @@ module Authorization
       
       module ClassMethods
         def acts_as_authorizable
-          has_many :roles, :as => :authorizable
-          has_many :authorizable_users, :through => :roles, :class_name => 'User'
+          has_many :accepted_roles, :as => :authorizable, :class_name => 'Role'
           
           def accepts_role?( role_name, user )
             user.has_role? role_name, self 
@@ -106,6 +111,7 @@ module Authorization
           end
           
           include Authorization::ObjectRolesTable::ModelExtensions::InstanceMethods
+          include Authorization::Identity::ModelExtensions::InstanceMethods   # Provides all kinds of dynamic sugar via method_missing
         end
       end
       
