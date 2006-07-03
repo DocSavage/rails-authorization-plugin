@@ -33,8 +33,16 @@ module Authorization
     end
     
     module ControllerInstanceMethods
-      include Authorization::Base::RecursiveDescentParser  #EvalParser
+      include Authorization::Base::RecursiveDescentParser  # EvalParser is another option
       
+      # Permit? turns off redirection by default and takes no blocks
+      def permit?( authorization_expression, *args )
+        @options = { :allow_guests => false, :redirect => false }
+        @options.merge!( args.last.is_a?( Hash ) ? args.last : {} )
+        
+        has_permission?( authorization_expression )
+      end
+
       # Allow method-level authorization checks.
       # permit (without a question mark ending) calls redirect on denial by default.
       # Specify :redirect => false to turn off redirection.
@@ -42,6 +50,16 @@ module Authorization
         @options = { :allow_guests => false, :redirect => true }
         @options.merge!( args.last.is_a?( Hash ) ? args.last : {} )
         
+        if has_permission?( authorization_expression )
+          yield if block_given?
+        elsif @options[:redirect]
+          handle_redirection
+        end
+      end
+            
+      private
+      
+      def has_permission?( authorization_expression )
         @current_user = get_user
         if not @options[:allow_guests]
           if @current_user.nil?  # We aren't logged in, or an exception has already been raised
@@ -55,28 +73,8 @@ module Authorization
             return false
           end
         end
-        
-        # Parse and evaluate the authorization expression
-        has_permission = parse_authorization_expression( authorization_expression )
-        if has_permission
-          yield if block_given?
-        elsif @options[:redirect]
-          handle_redirection
-        end
-        has_permission
+        parse_authorization_expression( authorization_expression )
       end
-      
-      # Permit? turns off redirection by default.
-      def permit?( authorization_expression, *args, &blk )
-        if args.last.is_a? Hash
-          args.last[:redirect] = false
-        else
-          args << { :redirect => false }
-        end
-        permit( authorization_expression, *args, &blk )
-      end
-      
-      private
       
       # Handle redirection within permit if authorization is denied.
       def handle_redirection
