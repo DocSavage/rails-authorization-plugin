@@ -75,7 +75,7 @@ module Authorization
       
       def process_role_of_model( role_name, model_name )
         model = get_model( model_name )
-        if not model.methods.include? "accepts_role?"
+        if not model.respond_to? :accepts_role?
           raise( ModelDoesntImplementRoles, "Model (#{model_name}) doesn't implement #accepts_role?" )
           return false
         end
@@ -188,7 +188,7 @@ module Authorization
           role_name = $2 || $3
           model_name = $5          
           model_obj = get_model( model_name )
-          if not model_obj.methods.include? "accepts_role?"
+          if not model_obj.respond_to? :accepts_role?
             raise( ModelDoesntImplementRoles, "Model (#{model_name}) doesn't implement #accepts_role?" )
             return false
           end

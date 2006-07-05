@@ -1,6 +1,6 @@
 = Authorization plugin
-Version 1.0 rc1
-June 21, 2006
+Version 1.0 rc2
+June 29, 2006
 
 http://www.writertopia.com/developers/authorization
 
@@ -16,26 +16,29 @@ will play nicely with them as long as some simple requirements are met:
    
 2. If you want to use "role of :model" authorization expressions, like "owner of :resource" or "eligible for :award", then your models with roles must implement an <tt>accepts_role?(role, user)</tt> method. This requirement can be handled by using <tt>acts_as_authorizable</tt> in the model class.
    
-Change the constants at the top of lib/authorization.rb to set your authentication
-system's login page and method for storing the current URL for return after authentication.
+The authorization plugin provides the following:
+* A simple way of checking authorization at either the class or instance method level using #permit and #permit?
+* Authorization using roles for the entire application, a model class, or an instance of a model (i.e., a particular object).
+* Some english-like dynamic methods that draw on the defined roles. You will be able to use methods like "user.is_fan_of angelina" or "angelina.has_fans?", where a 'fan' is only defined in the roles table.
+* Pick-and-choose a mixin for your desired level of database complexity. For all the features, you will want to use "object roles table" (see below)
 
 == Steps in using the plugin
 
 1. At the top of your config/environment.rb create an AUTHORIZATION_MIXIN constant and set it to "object roles" or "hardwired". See init.rb in this plugins.
-2. Depending on the mixin you use, create a migration to add the necessary database tables. If you use the "hardwired" mixin, no database use is required. Otherwise, you'll have to add a <tt>roles_users</tt> and <tt>roles</tt> table. Sample migrations are provided at the top of each mixin (e.g., object_roles_table.rb)
-3. Make sure your application provides the following: (a) #current_user method or something that returns the current user object. (b) the login page url hash is set in authorization.rb under the constant DEFAULT_REDIRECTION_HASH.
-4. Add <tt>acts_as_authorized_user</tt> to your user class.
-5. Add <tt>acts_as_authorizable</tt> to the models you want to query for roles.
+2. Change the constants at the top of lib/authorization.rb to set your authentication system's login page and method for storing the current URL for return after authentication.
+3. Depending on the mixin you use, create a migration to add the necessary database tables. If you use the "hardwired" mixin, no database use is required. Otherwise, you'll have to add a <tt>roles_users</tt> and <tt>roles</tt> table. Sample migrations are provided at the top of each mixin (e.g., object_roles_table.rb)
+4. Make sure your application provides the following: (a) #current_user method or something that returns the current user object. (b) the login page url hash is set in authorization.rb under the constant DEFAULT_REDIRECTION_HASH.
+5. Add <tt>acts_as_authorized_user</tt> to your user class.
+6. Add <tt>acts_as_authorizable</tt> to the models you want to query for roles.
 
 == Jumpstarting with a mixin
 
-
 The Authorization plugin comes with three modules that provide different levels of database support.
-Each of the mixins provide the "acts_as_authorized_user" and "acts_as_authorizable" class methods
-for your models. If you use one of those declarations, you get methods that handle authorization
-with different database schemes. A full test web application is provided for each of the modules
-so you can see how they work. The "Object Roles Table" version is recommended for normal use and
-is the default. The other mixins are provided for pedagogical reasons.
+Each of the mixins provide the <tt>acts_as_authorized_user</tt> and <tt>acts_as_authorizable</tt> 
+class methods for your models. If you use one of those declarations, you get methods that handle 
+authorization with different database schemes. A full test web application is provided for each 
+of the modules so you can see how they work. The "Object Roles Table" version is recommended for 
+normal use and is the default. The other mixins are provided for pedagogical reasons.
 
 === 1) Hardwired Roles
 
@@ -56,9 +59,19 @@ add a polymorphic field to the Role table. Because roles have polymorphic associ
 authorizable object, we can assign a user to a role for any model instance. So you could declare user X
 to be a moderator for workshop Y, or you could make user A be the owner of resource B.
 
+The identity module adds a number of dynamic methods that use defined roles. The user-like model
+gets methods like <tt>user.is_moderator_of group</tt> (sets user to "moderator" of <tt>group</tt>),
+<tt>user.is_moderator?</tt> (returns true/false if user has some role "moderator"), and
+<tt>group.has_moderators</tt> (returns an array of users that have role "moderator" for the group).
+If you prefer not to have these dynamic methods available, you can simply comment out the inclusion
+of the identity module within object_roles_table.rb.
+
+=== Migrations and Testing
+
 Each mixin's test web application comes with migrations to set up the database for the associated mixin.
 After reading the Rails Recipe on domain specific languages (DSLs) for testing, I added integration tests
-for each mixin test app that use a simple vocabulary for testing authorization.
+for each mixin test app that use a simple vocabulary for testing authorization. The object_roles_test
+application has the most tests. Please contribute tests to improve coverage.
 
 
 == The Specifics
@@ -88,8 +101,7 @@ in Authorization::Base::Parser.
 
 * If a specified role has no "of <model>" designation, we assume it is a user role (i.e., the model is the user-like object). 
 * If an "of :model" designation is given but no ":model" key/value is supplied in the hash, we check if an instance variable @model if it's available.
-* If the model has no preceding colon, we assume it's a class and query Model#self.accepts_role? (the class method) for the permission.
-(Currently only available in ObjectRolesTable mixin.)
+* If the model has no preceding colon, we assume it's a class and query Model#self.accepts_role? (the class method) for the permission. (Currently only available in ObjectRolesTable mixin.)
 
 For each role, a query is sent to the appropriate model object.
 
@@ -102,7 +114,7 @@ The grammar for the authorization expression is:
              <role> ::= /\w+/ | /'.*'/
 		
 Parentheses should be used to clarify permissions. 
-The expression "a or b and c or d" gets parsed like "a or (b and (c or d))" if you use the RecursiveDescentParser mixin.
+The expression "a or b and c or d" gets parsed like "a or (b and (c or d))" if you use the default RecursiveDescentParser mixin.
 (The EvalParser uses Ruby's eval and presumably won't suffer from this parsing issue.)
 
 ==== Options
@@ -123,40 +135,80 @@ The expression "a or b and c or d" gets parsed like "a or (b and (c or d))" if y
 
 <tt>:redirect_controller => controller</tt> that handles authorization failure (default is 'denied')
 
-=== Setting the roles
+=== Setting and getting the roles
 
 Roles are set by #has_role and #accepts_role methods that are mixed into the User-like object 
 and the authorizable models. User objects can set roles and optionally an object scope for
 that role:
 
 	user.has_role 'site_admin'
-	user.has_role 'moderator', workshop
+	user.has_role 'moderator', group
 	user.has_no_role 'site_admin'
-	user.has_no_role 'moderator', workshop
+	user.has_no_role 'moderator', group
+	user.has_role 'member', Group
 	
-(TODO: Add full support for class scope by passing in a Class instead of an model instance.)
-
+Note that the last method sets role "member" on a class "Group". Roles can be set with three
+scopes: entire application (no class or object specified), a model class, or an instance of a
+model (i.e., a model object). 
+	
 Models set roles for specific users:
 
 	a_model.accepts_role 'moderator', user
 	a_model.accepts_no_role 'moderator', user
+	Model.accepts_role 'class moderator', user
 
 The method language has been chosen to aid memory of the argument order. A user has a role "foo",
 so the role string immediately follows has_role. Similarly, a model accepts a role "foo", so
 the role string immediately follows accepts_role. Then we append the scope.
 
 Sometimes the user-like object might be an authorizable object as well, for example, when you 
-allow 'friend' roles for users.
+allow 'friend' roles for users. In this case, the user-like object can be declared to be
+<tt>acts_as_authorizable</tt> as well as <tt>acts_as_authorized_user</tt>.
 
-The Object Roles Table mixin version includes some dynamic methods that use the roles table.
+Role queries follow the same pattern as the setting of roles:
+
+    user.has_role? 'moderator'
+    user.has_role? 'moderator', group
+    user.has_role? 'member', Group
+    
+    a_model.accepts_role? 'moderator', user
+    Model.accepts_role? 'moderator', user
+  
+When a user is queried without specifying either a model class or object, it returns true if the
+user has *any* matching role. For example, <tt>user.has_role? 'moderator'</tt> returns true if
+the user is 'moderator' of a class, a model object, or just a generic 'moderator'.
+Note that if you say <tt>user.has_role 'moderator'</tt>, the user does not become 'moderator'
+for all classes and model objects; the user simply has a generic role 'moderator'.
+
+==== Dynamic methods through the Identity mixin
+
+The Object Roles Table version includes some dynamic methods that use the roles table.
 For example, if you have roles like "eligible", "moderator", and "owner", you'll be able to
 use the following:
 
-user.is_eligible_for_what   # --> returns array of authorizable objects for which user has role "eligible"
-user.is_moderator_of? workshop  # --> returns true/false
-user.is_moderator_of workshop   # --> sets user to have role "moderator" for object workshop.
-user.is_administrator  # --> sets user to have role "administrator" not really tied to any object.
+  user.is_eligible_for_what   --> returns array of authorizable objects for which user has role "eligible"
+  user.is_moderator_of? group --> returns true/false
+  user.is_moderator_of group  --> sets user to have role "moderator" for object group.
+  user.is_administrator       --> sets user to have role "administrator" not really tied to any object.
 
+Models get has_* methods:
+
+  group.has_moderators  --> returns array of users with role "moderator" on that group
+  group.has_moderators? --> returns true/false
+
+Allowed prepositions are optional in the above dynamic methods. They are simply syntactic sugar.
+For example, the following are equivalent:
+
+  user.is_member_of group
+  user.is_member_for group
+  user.is_member group
+  
+Allowed prepositions are required in the authorization expressions because they are used to distinguish
+"role" and "role of :model" and "role of Model".
+
+If you prefer not to pollute your namespace with these dynamic methods, do not include the
+Identity module in <tt>object_roles_table.rb</tt>.
+  
 === Pattern of use
 
 We expect the application to provide the following methods:
