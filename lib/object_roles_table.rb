@@ -6,7 +6,7 @@ require 'identity'
 # 2. Database tables that support the roles. A sample migration is
 #    supplied below
 #
-# create_table "roles_users", :id => false, :force => true, :index => false do |t|
+# create_table "roles_users", :id => false, :force => true  do |t|
 #   t.column :user_id,          :integer
 #   t.column :role_id,          :integer
 #   t.column :created_at,       :datetime
