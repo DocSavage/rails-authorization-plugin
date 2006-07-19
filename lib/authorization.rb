@@ -63,7 +63,6 @@ module Authorization
         @current_user = get_user
         if not @options[:allow_guests]
           if @current_user.nil?  # We aren't logged in, or an exception has already been raised
-            handle_redirection if @options[:redirect]
             return false
           elsif not @current_user.respond_to? :id
             raise( UserDoesntImplementID, "User doesn't implement #id")
