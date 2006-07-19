@@ -24,12 +24,11 @@ The authorization plugin provides the following:
 
 == Steps in using the plugin
 
-1. At the top of your config/environment.rb create an AUTHORIZATION_MIXIN constant and set it to "object roles" or "hardwired". See init.rb in this plugins.
-2. Change the constants at the top of lib/authorization.rb to set your authentication system's login page and method for storing the current URL for return after authentication.
+1. At the top of your config/environment.rb create an AUTHORIZATION_MIXIN constant and set it to "object roles" or "hardwired". (See init.rb in this plugin for how the role support is mixed in.)
+2. Make sure your application provides a current_user method or something that returns the current user object. Add the constants in environment.rb to set your authentication system’s login page (DEFAULT_REDIRECTION_HASH) and method for storing the current URL for return after authentication (STORE_LOCATION_METHOD). (See authorization.rb in the plugin's /lib directory for the default values of DEFAULT_REDIRECTION_HASH and STORE_LOCATION_METHOD.)
 3. Depending on the mixin you use, create a migration to add the necessary database tables. If you use the "hardwired" mixin, no database use is required. Otherwise, you'll have to add a <tt>roles_users</tt> and <tt>roles</tt> table. Sample migrations are provided at the top of each mixin (e.g., object_roles_table.rb)
-4. Make sure your application provides the following: (a) #current_user method or something that returns the current user object. (b) the login page url hash is set in authorization.rb under the constant DEFAULT_REDIRECTION_HASH.
-5. Add <tt>acts_as_authorized_user</tt> to your user class.
-6. Add <tt>acts_as_authorizable</tt> to the models you want to query for roles.
+4. Add <tt>acts_as_authorized_user</tt> to your user class.
+5. Add <tt>acts_as_authorizable</tt> to the models you want to query for roles.
 
 == Jumpstarting with a mixin
 
@@ -235,10 +234,9 @@ This method will be called if authorization fails and the user is about to be re
 the login action. This allows the application to return to the desired page after login.
 If the application doesn't provide this method, the method will not be called.
 
-The name of the method for storing a location can be modified by changing the constant
-STORE_LOCATION_METHOD in authorization.rb. Also, the default login page is defined by
-the constant DEFAULT_REDIRECTION_HASH in authorization.rb. I'll probably have a better
-constant setting method so the plugin can remain intact.
+The name of the method for storing a location can be modified by changing the constant 
+STORE_LOCATION_METHOD in environment.rb. Also, the default login page is defined by the 
+constant DEFAULT_REDIRECTION_HASH in authorization.rb and can be overriden in your environment.rb.
 
 === Conventions
 
