@@ -4,9 +4,13 @@ require 'parser'
 module Authorization
   module Base
   
-    # Modify these constants to tailor the plugin to your authentication system
-    DEFAULT_REDIRECTION_HASH = { :controller => 'account', :action => 'login' }
-    STORE_LOCATION_METHOD = :store_return_location
+    # Modify these constants in your environment.rb to tailor the plugin to your authentication system
+    if not Object.constants.include? "DEFAULT_REDIRECTION_HASH"
+      DEFAULT_REDIRECTION_HASH = { :controller => 'account', :action => 'login' }
+    end    
+    if not Object.constants.include? "STORE_LOCATION_METHOD"
+      STORE_LOCATION_METHOD = :store_return_location
+    end    
 
     def self.included( recipient )
       recipient.extend( ControllerClassMethods )
