@@ -3,12 +3,14 @@ require File.dirname(__FILE__) + '/exceptions'
 # In order to use this mixin, you'll need to define roles by overriding the
 # following functions:
 #
-# User#roles_include?(role)
+# User#has_role?(role)
 #   Return true or false depending on the roles (strings) passed in.
 #   
-# Model#user_has_role?(user, role)
+# Model#accepts_role?(role, user)
 #   Return true or false depending on the roles (strings) this particular user has for
 #   this particular model object.
+#
+# See http://www.writertopia.com/developers/authorization
 
 module Authorization
   module HardwiredRoles
