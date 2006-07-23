@@ -1,4 +1,4 @@
-require 'exceptions'
+require File.dirname(__FILE__) + '/exceptions'
 
 # In order to use this mixin, you'll need to define roles by overriding the
 # following functions:

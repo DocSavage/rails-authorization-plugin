@@ -1,5 +1,5 @@
-require 'exceptions'
-require 'parser'
+require File.dirname(__FILE__) + '/exceptions'
+require File.dirname(__FILE__) + '/parser'
 
 module Authorization
   module Base
