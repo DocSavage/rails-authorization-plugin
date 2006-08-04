@@ -93,7 +93,8 @@ module Authorization
         else
           flash[:notice] = "Login is required"
         end
-        redirect_to redirection 
+        redirect_to redirection
+        false  # Want to short-circuit the filters
       end
 
       # Try to find current user by checking options hash and instance method in that order.
