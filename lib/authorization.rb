@@ -37,7 +37,7 @@ module Authorization
     end
     
     module ControllerInstanceMethods
-      include Authorization::Base::RecursiveDescentParser  # EvalParser is another option
+      include Authorization::Base::EvalParser  # RecursiveDescentParser is another option
       
       # Permit? turns off redirection by default and takes no blocks
       def permit?( authorization_expression, *args )
