@@ -1,0 +1,31 @@
+TO DO
++ Add migration generator instead of having sample migration in comments
++ Add test generator instead of handling tests in test apps
++ Add support for groups
+
+CHANGES (from most recent to oldest)
+
+* Change default parser from Recursive Descent parser to Eval parser.
+Currently implemented recursive descent parser doesn't handle left-sided
+boolean expressions well. Eval parser relies on Ruby (good thing), but
+wherever there's an eval, we have to be more careful.
+
+* Will start linking to and monitoring forum area at RubyForge
+http://rubyforge.org/forum/?group_id=1797
+
+* Added changelog :)
+
+* Added return false to handle_redirection to short-circuit filters if
+redirect occurs. This is second fix to prevent double renders.
+
+* Changed the requires to pull files from the plugin directory. (Necessary for name conflicts between plugin and apps)
+
+* Minor fixes to update documentation
+
+1.0 rc3 -- July 19, 2006
+
+* Fix to prevent double redirect
+
+* Fix to migration examples
+
+... see svn log
