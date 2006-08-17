@@ -29,6 +29,7 @@ case AUTHORIZATION_MIXIN
     )
   when "object roles"
     require File.dirname(__FILE__) + '/lib/object_roles_table'
+    require File.dirname(__FILE__) + '/lib/role.rb'
     ActiveRecord::Base.send( :include, 
       Authorization::ObjectRolesTable::UserExtensions, 
       Authorization::ObjectRolesTable::ModelExtensions
