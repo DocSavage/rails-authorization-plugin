@@ -1,6 +1,4 @@
 = Authorization plugin
-Version 1.0 rc3
-July 19, 2006
 
 http://www.writertopia.com/developers/authorization
 
@@ -99,7 +97,7 @@ we assume you use the "of" preposition. You can modify the permitted preposition
 in Authorization::Base::Parser.
 
 * If a specified role has no "of <model>" designation, we assume it is a user role (i.e., the model is the user-like object). 
-* If an "of :model" designation is given but no ":model" key/value is supplied in the hash, we check if an instance variable @model if it's available.
+* If an "of model" designation is given but no "model" key/value is supplied in the hash, we check if an instance variable @model if it's available.
 * If the model has no preceding colon, we assume it's a class and query <tt>Model#self.accepts_role?</tt> (the class method) for the permission. (Currently only available in ObjectRolesTable mixin.)
 
 For each role, a query is sent to the appropriate model object.
@@ -109,12 +107,10 @@ The grammar for the authorization expression is:
              <expr> ::= (<expr>) | not <expr> | <term> or <expr> | <term> and <expr> | <term>
              <term> ::= <role> | <role> <preposition> <model>
       <preposition> ::= of | for | in | on | to | at | by
-            <model> ::= /:\w+/
+            <model> ::= /:*\w+/
              <role> ::= /\w+/ | /'.*'/
 		
-Parentheses should be used to clarify permissions. 
-The expression "a or b and c or d" gets parsed like "a or (b and (c or d))" if you use the default RecursiveDescentParser mixin.
-(The EvalParser uses Ruby's eval and presumably won't suffer from this parsing issue.)
+Parentheses should be used to clarify permissions. Note that you may prefix the model with an optional ":" -- the first versions of Authorization plugin made this mandatory but it's now optional since the mandatory preposition makes models unambiguous.
 
 ==== Options
 

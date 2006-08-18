@@ -12,7 +12,7 @@ module Authorization
       #         <expr> ::= (<expr>) | not <expr> | <term> or <expr> | <term> and <expr> | <term>
       #         <term> ::= <role> | <role> <preposition> <model>
       #  <preposition> ::= of | for | in | on | to | at | by
-      #        <model> ::= /:\w+/
+      #        <model> ::= /:*\w+/
       #         <role> ::= /\w+/ | /'.*'/
       #
       # Instead of doing recursive descent parsing (not so fun when we support nested parentheses, etc),
@@ -98,7 +98,7 @@ module Authorization
     #         <expr> ::= (<expr>) | not <expr> | <term> or <expr> | <term> and <expr> | <term>
     #         <term> ::= <role> | <role> <preposition> <model>
     #  <preposition> ::= of | for | in | on | to | at | by
-    #        <model> ::= /:\w+/
+    #        <model> ::= /:*\w+/
     #         <role> ::= /\w+/ | /'.*'/
     #
     # There are really two values we must track:
