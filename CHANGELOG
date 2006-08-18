@@ -5,6 +5,8 @@ TO DO
 
 CHANGES (from most recent to oldest)
 
+* The colon preceding a model name in the authorization expression is now optional. The parser uses accepted prepositions to disambiguate models from roles.
+
 * Change default parser from Recursive Descent parser to Eval parser.
 Currently implemented recursive descent parser doesn't handle left-sided
 boolean expressions well. Eval parser relies on Ruby (good thing), but
@@ -22,7 +24,7 @@ redirect occurs. This is second fix to prevent double renders.
 
 * Minor fixes to update documentation
 
-1.0 rc3 -- July 19, 2006
+=== 1.0 rc3 (July 19, 2006)
 
 * Fix to prevent double redirect
 
