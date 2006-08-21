@@ -1,12 +1,16 @@
 TO DO
 + Added namespacing to @options instance variable to prevent possible name clashes
-+ Add generator for role.rb model and migration
 + Add test generator instead of handling tests in test apps
 + Add support for groups
 + Extend coverage to models. Look at Bruce Perens's ModelSecurity and access with_scope
 + Extend grammar to allow "(admin or moderator or some_role) of some_model" (?) [Chris Hapgood]
 
 CHANGES (from most recent to oldest)
+
+* Add generator for role model and migration, e.g., "script/generate role_model Role".
+  Role model must be called "Role" at this time. More general naming as a TO DO.
+
+* Removed simple_roles_table to simplify plugin.
 
 * Moved all files in Authorization namespace into /publishare subdirectory
   to reduce danger of clashes in load path [nod to Michael Schuerig].

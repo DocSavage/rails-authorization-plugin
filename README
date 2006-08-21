@@ -12,7 +12,7 @@ will play nicely with them as long as some simple requirements are met:
 
 1. User objects are available that implement a <tt>has_role?(role, authorizable_object = nil)</tt> method. This requirement can be easily handled by using <tt>acts_as_authorized_user</tt> in the User-like class.
    
-2. If you want to use "role of :model" authorization expressions, like "owner of :resource" or "eligible for :award", then your models with roles must implement an <tt>accepts_role?(role, user)</tt> method. This requirement can be handled by using <tt>acts_as_authorizable</tt> in the model class.
+2. If you want to use "role of model" authorization expressions, like "owner of resource" or "eligible for :award", then your models with roles must implement an <tt>accepts_role?(role, user)</tt> method. This requirement can be handled by using <tt>acts_as_authorizable</tt> in the model class.
    
 The authorization plugin provides the following:
 * A simple way of checking authorization at either the class or instance method level using #permit and #permit?
@@ -98,7 +98,7 @@ in Authorization::Base::Parser.
 
 * If a specified role has no "of <model>" designation, we assume it is a user role (i.e., the model is the user-like object). 
 * If an "of model" designation is given but no "model" key/value is supplied in the hash, we check if an instance variable @model if it's available.
-* If the model has no preceding colon, we assume it's a class and query <tt>Model#self.accepts_role?</tt> (the class method) for the permission. (Currently only available in ObjectRolesTable mixin.)
+* If the model is capitalized, we assume it's a class and query <tt>Model#self.accepts_role?</tt> (the class method) for the permission. (Currently only available in ObjectRolesTable mixin.)
 
 For each role, a query is sent to the appropriate model object.
 
@@ -236,15 +236,15 @@ constant DEFAULT_REDIRECTION_HASH in authorization.rb and can be overriden in yo
 
 === Conventions
 
-Roles specified without the "of :model" designation:
+Roles specified without the "of model" designation:
 
 1. We see if there is a <tt>current_user</tt> method available that will return a user object. This method can be overridden with the <tt>:user</tt> hash.
 2. Once a user object is determined, we pass the role to <tt>user.has_role?</tt> and expect a true return value if the user has the given role.
 
-Roles specified with "of :model" designation:
+Roles specified with "of model" designation:
 
-1. We attempt to query an object in the options hash that has a matching key. Example: <tt>permit "knight for :justice", :justice => @abstract_idea</tt>
-2. If there is no object with a matching key, we see if there's a matching instance variable. Example: @meeting defined before we use <tt>permit "moderator of :meeting"</tt>
+1. We attempt to query an object in the options hash that has a matching key. Example: <tt>permit "knight for justice", :justice => @abstract_idea</tt>
+2. If there is no object with a matching key, we see if there's a matching instance variable. Example: @meeting defined before we use <tt>permit "moderator of meeting"</tt>
 3. Once the model object is determined, we pass the role and user (determined in the manner above) to <tt>model.accepts_role?</tt>
 
 === More information

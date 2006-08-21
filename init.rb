@@ -20,16 +20,8 @@ case AUTHORIZATION_MIXIN
       Authorization::HardwiredRoles::UserExtensions, 
       Authorization::HardwiredRoles::ModelExtensions 
     )
-  when "simple roles"
-    require File.dirname(__FILE__) + '/lib/publishare/simple_roles_table'
-    require File.dirname(__FILE__) + '/lib/publishare/role.rb'
-    ActiveRecord::Base.send( :include, 
-      Authorization::SimpleRolesTable::UserExtensions, 
-      Authorization::SimpleRolesTable::ModelExtensions 
-    )
   when "object roles"
     require File.dirname(__FILE__) + '/lib/publishare/object_roles_table'
-    require File.dirname(__FILE__) + '/lib/publishare/role.rb'
     ActiveRecord::Base.send( :include, 
       Authorization::ObjectRolesTable::UserExtensions, 
       Authorization::ObjectRolesTable::ModelExtensions

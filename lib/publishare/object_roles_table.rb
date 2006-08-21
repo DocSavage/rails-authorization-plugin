@@ -1,26 +1,6 @@
 require File.dirname(__FILE__) + '/exceptions'
 require File.dirname(__FILE__) + '/identity'
 
-# In order to use this mixin, you'll need the following:
-# 1. A Role class with proper associations (habtm to User-like class)
-# 2. Database tables that support the roles. A sample migration is
-#    supplied below
-#
-# create_table "roles_users", :id => false, :force => true  do |t|
-#   t.column :user_id,          :integer
-#   t.column :role_id,          :integer
-#   t.column :created_at,       :datetime
-#   t.column :updated_at,       :datetime
-# end
-# 
-# create_table "roles", :force => true do |t|
-#   t.column :name,               :string, :limit => 40
-#   t.column :authorizable_type,  :string, :limit => 30
-#   t.column :authorizable_id,    :integer
-#   t.column :created_at,         :datetime
-#   t.column :updated_at,         :datetime
-# end
- 
 module Authorization
   module ObjectRolesTable
   
