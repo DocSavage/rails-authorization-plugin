@@ -18,5 +18,6 @@ class <%= migration_name %> < ActiveRecord::Migration
 
   def self.down
     drop_table :<%= table_name %>
+    drop_table :<%= (table_name < 'users') ? "#{table_name}_users" : "users_#{table_name}" %>
   end
 end
