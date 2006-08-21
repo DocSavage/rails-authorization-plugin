@@ -7,7 +7,7 @@ This plugin provides a flexible way to add authorization to Rails.
 The authorization process decides whether a user is allowed access to some feature. 
 It is distinct from the authentication process, which tries to confirm a user is 
 authentic, not an imposter. There are many authentication systems available for Rails, 
-e.g., acts_as_authenticated and UserEngine. This authorization system 
+e.g., acts_as_authenticated and LoginEngine. This authorization system 
 will play nicely with them as long as some simple requirements are met:
 
 1. User objects are available that implement a <tt>has_role?(role, authorizable_object = nil)</tt> method. This requirement can be easily handled by using <tt>acts_as_authorized_user</tt> in the User-like class.
@@ -24,32 +24,25 @@ The authorization plugin provides the following:
 
 1. At the top of your config/environment.rb create an AUTHORIZATION_MIXIN constant and set it to "object roles" or "hardwired". (See init.rb in this plugin for how the role support is mixed in.)
 2. Make sure your application provides a current_user method or something that returns the current user object. Add the constants in environment.rb to set your authentication system’s login page (DEFAULT_REDIRECTION_HASH) and method for storing the current URL for return after authentication (STORE_LOCATION_METHOD). (See authorization.rb in the plugin's /lib directory for the default values of DEFAULT_REDIRECTION_HASH and STORE_LOCATION_METHOD.)
-3. Depending on the mixin you use, create a migration to add the necessary database tables. If you use the "hardwired" mixin, no database use is required. Otherwise, you'll have to add a <tt>roles_users</tt> and <tt>roles</tt> table. Sample migrations are provided at the top of each mixin (e.g., object_roles_table.rb)
+3. If you use the "hardwired" mixin, no database use is required. Otherwise, you'll have to generate a role.rb model (and its associated join table with User) by running "script/generate role_model Role" and doing "rake migrate".
 4. Add <tt>acts_as_authorized_user</tt> to your user class.
 5. Add <tt>acts_as_authorizable</tt> to the models you want to query for roles.
 
 == Jumpstarting with a mixin
 
-The Authorization plugin comes with three modules that provide different levels of database support.
+The Authorization plugin comes with two modules that provide different levels of database support.
 Each of the mixins provide the <tt>acts_as_authorized_user</tt> and <tt>acts_as_authorizable</tt> 
 class methods for your models. If you use one of those declarations, you get methods that handle 
 authorization with different database schemes. A full test web application is provided for each 
 of the modules so you can see how they work. The "Object Roles Table" version is recommended for 
-normal use and is the default. The other mixins are provided for pedagogical reasons.
+normal use and is the default.
 
 === 1) Hardwired Roles
 
 This is the simplest and requires no database. Roles are assumed to be coded into the Model classes
 using the <tt>has_role?(role, obj = nil)</tt> method.
 
-=== 2) Simple Roles Table
-
-Roles have a has_and_belongs_to_many (habtm) relationship with Users. Roles have string names and
-are not associated with any model instances. Because roles aren't associated with any model instance,
-this mixin can't support "role of :model" authorization expressions through the database. You can,
-however, support those expressions by writing code in models' <tt>has_role?</tt> methods.
-
-=== 3) Object Roles Table
+=== 2) Object Roles Table
 
 The Object Roles Table mixin provides full support for authorization expressions within a database by
 add a polymorphic field to the Role table. Because roles have polymorphic associations to an
@@ -92,7 +85,7 @@ and authorizable models. Examples include "admin" (User model assumed), "moderat
 (looks at options hash and then @workshop), "'top salesman' at :company" (multiword roles delimited 
 by single quotes), or "scheduled for Exam" (queries class method of Exam).
 
-Note that we can use several permitted prepositions (of, for, by, to, at). In the discussion below,
+Note that we can use several permitted prepositions ('of', 'for', 'in', 'on', 'to', 'at', 'by'). In the discussion below,
 we assume you use the "of" preposition. You can modify the permitted prepositions by changing the constant
 in Authorization::Base::Parser.
 
