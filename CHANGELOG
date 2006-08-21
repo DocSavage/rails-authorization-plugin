@@ -1,9 +1,17 @@
 TO DO
-+ Add migration generator instead of having sample migration in comments
++ Added namespacing to @options instance variable to prevent possible name clashes
++ Add generator for role.rb model and migration
 + Add test generator instead of handling tests in test apps
 + Add support for groups
++ Extend coverage to models. Look at Bruce Perens's ModelSecurity and access with_scope
++ Extend grammar to allow "(admin or moderator or some_role) of some_model" (?) [Chris Hapgood]
 
 CHANGES (from most recent to oldest)
+
+* Moved all files in Authorization namespace into /publishare subdirectory
+  to reduce danger of clashes in load path [nod to Michael Schuerig].
+
+* Small code refinement patch [Michael Schuerig]
 
 * The colon preceding a model name in the authorization expression is now optional. The parser uses accepted prepositions to disambiguate models from roles.
 

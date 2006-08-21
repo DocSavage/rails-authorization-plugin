@@ -1,5 +1,5 @@
-require File.dirname(__FILE__) + '/exceptions'
-require File.dirname(__FILE__) + '/parser'
+require File.dirname(__FILE__) + '/publishare/exceptions'
+require File.dirname(__FILE__) + '/publishare/parser'
 
 module Authorization
   module Base
