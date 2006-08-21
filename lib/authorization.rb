@@ -70,10 +70,8 @@ module Authorization
             return false
           elsif not @current_user.respond_to? :id
             raise( UserDoesntImplementID, "User doesn't implement #id")
-            return false
           elsif not @current_user.respond_to? :has_role?
             raise( UserDoesntImplementRoles, "User doesn't implement #has_role?" )
-            return false
           end
         end
         parse_authorization_expression( authorization_expression )
@@ -103,7 +101,7 @@ module Authorization
           @options[:user]
         elsif @options[:get_user_method]
           send( @options[:get_user_method] )
-        elsif methods.include? "current_user"
+        elsif self.respond_to? :current_user
           current_user
         elsif not @options[:allow_guests]
           raise( CannotObtainUserObject, "Couldn't find #current_user or @user, and nothing appropriate found in hash" )
