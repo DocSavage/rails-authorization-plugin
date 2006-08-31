@@ -41,7 +41,6 @@ module Authorization
           instance_eval( expr )
         rescue
           raise AuthorizationExpressionInvalid, "Cannot parse authorization (#{str})"
-          false
         end
       end
       
@@ -75,16 +74,13 @@ module Authorization
       
       def process_role_of_model( role_name, model_name )
         model = get_model( model_name )
-        if not model.respond_to? :accepts_role?
-          raise( ModelDoesntImplementRoles, "Model (#{model_name}) doesn't implement #accepts_role?" )
-          return false
-        end
-
+        raise( ModelDoesntImplementRoles, "Model (#{model_name}) doesn't implement #accepts_role?" ) if not model.respond_to? :accepts_role?
         model.send( :accepts_role?, role_name, @current_user )
       end
       
       def process_role( role_name )
         return false if @current_user.nil?
+        raise( UserDoesntImplementRoles, "User doesn't implement #has_role?" ) if not @current_user.respond_to? :has_role?
         @current_user.has_role?( role_name )
       end
 
@@ -108,6 +104,8 @@ module Authorization
     # has been parsed and the permission is false, we don't want to try different ways of parsing.
     # Note that this implementation of a recursive descent parser is meant to be simple
     # and doesn't allow arbitrary nesting of parentheses. It supports up to 5 levels of nesting.
+    # It also won't handle some types of expressions (A or B) and C, which has to be rewritten as
+    # C and (A or B) so the parenthetical expressions are in the tail.
     module RecursiveDescentParser
       
       OPT_PARENTHESES_PATTERN = '(([^()]|\(([^()]|\(([^()]|\(([^()]|\(([^()]|\(([^()])*\))*\))*\))*\))*\))*)'
@@ -126,11 +124,8 @@ module Authorization
       ROLE_OF_MODEL_REGEX = Regexp.new('^\s*' + ROLE_PATTERN + '\s+(' + VALID_PREPOSITIONS_PATTERN + ')\s+' + MODEL_PATTERN + '\s*$')
         
       def parse_authorization_expression( str )
-        @stack = []
-        if not parse_expr( str )
-          raise AuthorizationExpressionInvalid, "Cannot parse authorization (#{str})"
-          return false
-        end
+        @stack = []       
+        raise AuthorizationExpressionInvalid, "Cannot parse authorization (#{str})" if not parse_expr( str )
         return @stack.pop
       end
       
@@ -170,11 +165,7 @@ module Authorization
       
       # Descend down parenthesis (allow up to 5 levels of nesting)
       def parse_parenthesis( str )
-        if str =~ PARENTHESES_REGEX
-          parse_expr( $1 )
-        else
-          false
-        end
+        str =~ PARENTHESES_REGEX ? parse_expr( $1 ) : false
       end
       
       def parse_term( str )
@@ -188,34 +179,30 @@ module Authorization
           role_name = $2 || $3
           model_name = $5          
           model_obj = get_model( model_name )
-          if not model_obj.respond_to? :accepts_role?
-            raise( ModelDoesntImplementRoles, "Model (#{model_name}) doesn't implement #accepts_role?" )
-            return false
-          end
+          raise( ModelDoesntImplementRoles, "Model (#{model_name}) doesn't implement #accepts_role?" ) if not model_obj.respond_to? :accepts_role?
 
           has_permission = model_obj.send( :accepts_role?, role_name, @current_user )
           @stack.push( has_permission )
-          return true
+          true
+        else
+          false
         end
-        false
       end
       
       # Parse <role> of the User-like object
       def parse_role( str )
         if str =~ ROLE_REGEX
           role_name = $1
-          begin
-            if @current_user.nil?
-              @stack.push( false )
-            else
-              @stack.push( @current_user.has_role?( role_name ) )
-            end
-          rescue
-            @stack.push( false )
+          if @current_user.nil?
+            @stack.push(false)
+          else
+            raise( UserDoesntImplementRoles, "User doesn't implement #has_role?" ) if not @current_user.respond_to? :has_role?
+            @stack.push( @current_user.has_role?(role_name) )
           end
-          return true 
+          true 
+        else
+          false
         end
-        false
       end
       
     end
