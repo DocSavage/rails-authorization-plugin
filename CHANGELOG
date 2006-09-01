@@ -1,4 +1,5 @@
 TO DO
++ Add Right model generator and DB-backed way of handling rights in addition to inlined "permit" checks
 + Added namespacing to @options instance variable to prevent possible name clashes
 + Add test generator instead of handling tests in test apps
 + Add support for groups
@@ -6,6 +7,8 @@ TO DO
 + Extend grammar to allow "(admin or moderator or some_role) of some_model" (?) [Chris Hapgood]
 
 CHANGES (from most recent to oldest)
+
+* Cleaned up exception handling a little [due to suggestion by Michael Schuerig]
 
 * Add generator for role model and migration, e.g., "script/generate role_model Role".
   Role model must be called "Role" at this time. More general naming as a TO DO.
