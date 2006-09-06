@@ -8,6 +8,10 @@ TO DO
 
 CHANGES (from most recent to oldest)
 
+* Use before_filter rather than prepend_before_filter so necessary instance variables (and methods) can be established before trying authorization checks. This fix came about for Mephisto blog where a class-level permit "admin of site" was used. The site attribute was set in a before_filter. If you prepend your authorization filter, it will execute before any other before_filter, which is probably not a good idea.
+
+* Add "about" yaml for future Rails plugin directory.
+
 * Cleaned up exception handling a little [due to suggestion by Michael Schuerig]
 
 * Add generator for role model and migration, e.g., "script/generate role_model Role".
