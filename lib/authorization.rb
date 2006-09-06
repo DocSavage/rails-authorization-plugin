@@ -30,7 +30,7 @@ module Authorization
           filter_args.merge!( args.last.reject {|k,v| not filter_keys.include? k } ) 
           eval_args.merge!( args.last.reject {|k,v| filter_keys.include? k } ) 
         end
-        prepend_before_filter( filter_args ) do |controller|
+        before_filter( filter_args ) do |controller|
           controller.permit( authorization_expression, eval_args )
         end      
       end
