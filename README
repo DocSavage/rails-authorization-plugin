@@ -119,9 +119,9 @@ Parentheses should be used to clarify permissions. Note that you may prefix the 
 
 <tt>:redirect => bool</tt>. default is <tt>true</tt>. If <tt>false</tt>, permit will not redirect to denied page.
 
-<tt>:redirect_action => action</tt> that handles authorization failure (default is 'account')
+<tt>:redirect_action => action</tt> that handles authorization failure (default is 'login')
 
-<tt>:redirect_controller => controller</tt> that handles authorization failure (default is 'denied')
+<tt>:redirect_controller => controller</tt> that handles authorization failure (default is 'account')
 
 === Setting and getting the roles
 
