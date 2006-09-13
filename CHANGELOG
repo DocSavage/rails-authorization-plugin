@@ -8,6 +8,8 @@ TO DO
 
 CHANGES (from most recent to oldest)
 
+=== 1.0 release (Sept 13, 2006)
+
 * Added attr_protected for habtm and has_many role ids to block security concern if developers use update_attributes(params[:auth_obj]) on an authorizable object [Michael Schuerig]
 
 * Use before_filter rather than prepend_before_filter so necessary instance variables (and methods) can be established before trying authorization checks. This fix came about for Mephisto blog where a class-level permit "admin of site" was used. The site attribute was set in a before_filter. If you prepend your authorization filter, it will execute before any other before_filter, which is probably not a good idea.
