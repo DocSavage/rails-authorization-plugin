@@ -60,7 +60,7 @@ module Authorization
           elsif authorizable_obj
             Role.find( :first, 
                        :conditions => [ 'name = ? and authorizable_type = ? and authorizable_id = ?', 
-                                        role_name, authorizable_obj.class.to_s, authorizable_obj.id ] )
+                                        role_name, authorizable_obj.class.base_class.to_s, authorizable_obj.id ] )
           else
             Role.find( :first, 
                        :conditions => [ 'name = ? and authorizable_type IS NULL and authorizable_id IS NULL', role_name ] )

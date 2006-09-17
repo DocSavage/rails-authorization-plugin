@@ -8,6 +8,8 @@ TO DO
 
 CHANGES (from most recent to oldest)
 
+* Patch to allow authorizable objects that use single table inheritance (STI) [Sean Geoghegan]
+
 === 1.0 release (Sept 13, 2006)
 
 * Added attr_protected for habtm and has_many role ids to block security concern if developers use update_attributes(params[:auth_obj]) on an authorizable object [Michael Schuerig]
