@@ -89,7 +89,7 @@ module Authorization
         if @current_user
           flash[:notice] = "Permission denied. Your account cannot access the requested page."
         else
-          flash[:notice] = "Login is required"
+          flash[:notice] = @options[:redirect_message] ? @options[:redirect_message] : "Login is required"
         end
         redirect_to redirection
         false  # Want to short-circuit the filters

@@ -3,10 +3,14 @@ TO DO
 + Added namespacing to @options instance variable to prevent possible name clashes
 + Add test generator instead of handling tests in test apps
 + Add support for groups
-+ Extend coverage to models. Look at Bruce Perens's ModelSecurity and access with_scope
 + Extend grammar to allow "(admin or moderator or some_role) of some_model" (?) [Chris Hapgood]
++ Extend coverage to models. Look at Bruce Perens's ModelSecurity and access with_scope. (9/3006 - Recently investigated extension to model and the most programmer-friendly DSLs may require too much hacking on ActiveRecord.)
 
 CHANGES (from most recent to oldest)
+
+=== SVN
+
+* Allow customization of message on redirection after failed authorization (:redirect_message option) [Joey Geiger]
 
 * Patch to allow authorizable objects that use single table inheritance (STI) [Sean Geoghegan]
 
