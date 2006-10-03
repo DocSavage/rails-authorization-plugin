@@ -10,6 +10,8 @@ CHANGES (from most recent to oldest)
 
 === SVN
 
+* Performance improvement for has_role?  [Sean Geoghegan]
+
 * Allow customization of message on redirection after failed authorization (:redirect_message option) [Joey Geiger]
 
 * Patch to allow authorizable objects that use single table inheritance (STI) [Sean Geoghegan]

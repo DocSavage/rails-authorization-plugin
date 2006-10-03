@@ -25,7 +25,7 @@ module Authorization
             self.roles.find_by_name( role_name ) ? true : false    # If we ask a general role question, return true if any role is defined.
           else
             role = get_role( role_name, authorizable_obj )
-            self.roles.include? role
+            role ? self.roles.exists?( role.id ) : false
           end
         end
         
