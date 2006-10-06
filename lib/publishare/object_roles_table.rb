@@ -40,7 +40,7 @@ module Authorization
               role = Role.create( :name => role_name )
             end
           end
-          self.roles << role if not self.roles.include?( role )
+          self.roles << role if role and not self.roles.exists?( role.id )
         end
         
         def has_no_role( role_name, authorizable_obj = nil  )
