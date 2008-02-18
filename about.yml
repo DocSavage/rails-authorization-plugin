@@ -4,5 +4,5 @@ description: Adds a flexible mechanism for authorization. Differs from other aut
 homepage: http://www.writertopia.com/developers/authorization
 plugin: http://svn.writertopia.com/svn/plugins/authorization/
 license: MIT
-version: 1.0rc3
-rails_version: 1.0+
+version: 1.0.3
+rails_version: 2.0+

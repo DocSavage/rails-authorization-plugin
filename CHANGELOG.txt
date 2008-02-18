@@ -9,6 +9,10 @@ TO DO
 
 CHANGES (from most recent to oldest)
 
+=== 1.0.3 release (February 17, 2008)
+
+* Minor changes to USAGE text for ./script/generate role_model
+
 === 1.0.2 release (February 17, 2008)
 
 * From this release forward the plugin requires use of Ruby on Rails version 2.x.  Version 1.0.1 is the final release fully compatible with Rails 1.2.x.

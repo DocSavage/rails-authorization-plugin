@@ -4,8 +4,8 @@ Description:
     The generator takes a model name as its argument, which at this time must be 'Role'.
 
     The generator creates a Role model class in app/models, a test suite in
-    test/unit, test fixtures in test/fixtures/singular_name.yml, and a migration
-    in db/migrate.
+    test/unit, test fixtures in test/fixtures/roles.yml, and a migration
+    in the db/migrate directory.
 
 Example:
     ./script/generate role_model Role
@@ -15,6 +15,6 @@ Example:
         Test:       test/unit/role_test.rb
         Fixtures:   test/fixtures/roles.yml
         Migration:  db/migrate/XXX_add_role.rb
-        
-    You should then run "rake migrate".
+
+    You should then run 'rake db:migrate'.
 
