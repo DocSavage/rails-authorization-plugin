@@ -4,7 +4,7 @@ ActionController::Base.send( :include, Authorization::Base )
 ActionView::Base.send( :include, Authorization::Base::ControllerInstanceMethods )
 
 # You can perform authorization at varying degrees of complexity.
-# Choose a style of authorization below (see README) and the appropriate
+# Choose a style of authorization below (see README.txt) and the appropriate
 # mixin will be used for your app.
 
 # When used with the auth_test app, we define this in config/environment.rb
