@@ -6,7 +6,13 @@ TO DO
 + Extend grammar to allow "(admin or moderator or some_role) of some_model" (?) [Chris Hapgood]
 + Extend coverage to models. Look at Bruce Perens's ModelSecurity and access with_scope. (9/3006 - Recently investigated extension to model and the most programmer-friendly DSLs may require too much hacking on ActiveRecord.)
 
+
 CHANGES (from most recent to oldest)
+
+=== 1.0.2 release (February 17, 2008)
+
+* From this release forward the plugin requires use of Ruby on Rails version 2.x.  Version 1.0.1 is the final release fully compatible with Rails 1.2.x.
+* Upgraded the database migration generator to create the new Rails 2.0.x style 'sexy migrations'.
 
 === 1.0.1 release (February 17, 2008)
 
