@@ -1,10 +1,10 @@
 module Authorization
   module Base
-    
+
     VALID_PREPOSITIONS = ['of', 'for', 'in', 'on', 'to', 'at', 'by']
     BOOLEAN_OPS = ['not', 'or', 'and']
     VALID_PREPOSITIONS_PATTERN = VALID_PREPOSITIONS.join('|')
-        
+
     module EvalParser
       # Parses and evaluates an authorization expression and returns <tt>true</tt> or <tt>false</tt>.
       #
@@ -27,7 +27,7 @@ module Authorization
       # 1) Replace all <role> <preposition> <model> matches.
       # 2) Replace all <role> matches that aren't one of our other terminals ('not', 'or', 'and', or preposition)
       # 3) Eval
-      
+
       def parse_authorization_expression( str )
         if str =~ /[^A-Za-z0-9_:'\(\)\s]/
           raise AuthorizationExpressionInvalid, "Invalid authorization expression (#{str})"
@@ -43,7 +43,7 @@ module Authorization
           raise AuthorizationExpressionInvalid, "Cannot parse authorization (#{str})"
         end
       end
-      
+
       def replace_temporarily_role_of_model( str )
         role_regex = '\s*(\'\s*(.+)\s*\'|(\w+))\s+'
         model_regex = '\s+(:*\w+)'
@@ -53,7 +53,7 @@ module Authorization
           " <#{@replacements.length-1}> "
         end
       end
-      
+
       def replace_role( str )
         role_regex = '\s*(\'\s*(.+)\s*\'|([A-Za-z]\w*))\s*'
         parse_regex = Regexp.new(role_regex)
@@ -65,19 +65,19 @@ module Authorization
           end
         end
       end
-      
+
       def replace_role_of_model( str )
         str.gsub(/<(\d+)>/) do |match|
           @replacements[$1.to_i]
         end
       end
-      
+
       def process_role_of_model( role_name, model_name )
         model = get_model( model_name )
         raise( ModelDoesntImplementRoles, "Model (#{model_name}) doesn't implement #accepts_role?" ) if not model.respond_to? :accepts_role?
         model.send( :accepts_role?, role_name, @current_user )
       end
-      
+
       def process_role( role_name )
         return false if @current_user.nil?
         raise( UserDoesntImplementRoles, "User doesn't implement #has_role?" ) if not @current_user.respond_to? :has_role?
@@ -85,7 +85,7 @@ module Authorization
       end
 
     end
-    
+
     # Parses and evaluates an authorization expression and returns <tt>true</tt> or <tt>false</tt>.
     # This recursive descent parses uses two instance variables:
     #  @stack --> a stack with the top holding the boolean expression resulting from the parsing
@@ -107,7 +107,7 @@ module Authorization
     # It also won't handle some types of expressions (A or B) and C, which has to be rewritten as
     # C and (A or B) so the parenthetical expressions are in the tail.
     module RecursiveDescentParser
-      
+
       OPT_PARENTHESES_PATTERN = '(([^()]|\(([^()]|\(([^()]|\(([^()]|\(([^()]|\(([^()])*\))*\))*\))*\))*\))*)'
       PARENTHESES_PATTERN = '\(' + OPT_PARENTHESES_PATTERN + '\)'
       NOT_PATTERN = '^\s*not\s+' + OPT_PARENTHESES_PATTERN + '$'
@@ -115,20 +115,20 @@ module Authorization
       OR_PATTERN = '^\s*' + OPT_PARENTHESES_PATTERN + '\s+or\s+' + OPT_PARENTHESES_PATTERN + '\s*$'
       ROLE_PATTERN = '(\'\s*(.+)\s*\'|(\w+))'
       MODEL_PATTERN = '(:*\w+)'
-      
+
       PARENTHESES_REGEX = Regexp.new('^\s*' + PARENTHESES_PATTERN + '\s*$')
       NOT_REGEX = Regexp.new(NOT_PATTERN)
       AND_REGEX = Regexp.new(AND_PATTERN)
       OR_REGEX = Regexp.new(OR_PATTERN)
       ROLE_REGEX = Regexp.new('^\s*' + ROLE_PATTERN + '\s*$')
       ROLE_OF_MODEL_REGEX = Regexp.new('^\s*' + ROLE_PATTERN + '\s+(' + VALID_PREPOSITIONS_PATTERN + ')\s+' + MODEL_PATTERN + '\s*$')
-        
+
       def parse_authorization_expression( str )
-        @stack = []       
+        @stack = []
         raise AuthorizationExpressionInvalid, "Cannot parse authorization (#{str})" if not parse_expr( str )
         return @stack.pop
       end
-      
+
       def parse_expr( str )
         parse_parenthesis( str ) or
         parse_not( str ) or
@@ -136,15 +136,15 @@ module Authorization
         parse_and( str ) or
         parse_term( str )
       end
-      
+
       def parse_not( str )
-        if str =~ NOT_REGEX 
+        if str =~ NOT_REGEX
           can_parse = parse_expr( $1 )
           @stack.push( !@stack.pop ) if can_parse
         end
         false
       end
-      
+
       def parse_or( str )
         if str =~ OR_REGEX
           can_parse = parse_expr( $1 ) and parse_expr( $8 )
@@ -153,7 +153,7 @@ module Authorization
         end
         false
       end
-      
+
       def parse_and( str )
         if str =~ AND_REGEX
           can_parse = parse_expr( $1 ) and parse_expr( $8 )
@@ -162,22 +162,22 @@ module Authorization
         end
         false
       end
-      
+
       # Descend down parenthesis (allow up to 5 levels of nesting)
       def parse_parenthesis( str )
         str =~ PARENTHESES_REGEX ? parse_expr( $1 ) : false
       end
-      
+
       def parse_term( str )
         parse_role_of_model( str ) or
         parse_role( str )
       end
-      
+
       # Parse <role> of <model>
       def parse_role_of_model( str )
         if str =~ ROLE_OF_MODEL_REGEX
           role_name = $2 || $3
-          model_name = $5          
+          model_name = $5
           model_obj = get_model( model_name )
           raise( ModelDoesntImplementRoles, "Model (#{model_name}) doesn't implement #accepts_role?" ) if not model_obj.respond_to? :accepts_role?
 
@@ -188,7 +188,7 @@ module Authorization
           false
         end
       end
-      
+
       # Parse <role> of the User-like object
       def parse_role( str )
         if str =~ ROLE_REGEX
@@ -199,12 +199,12 @@ module Authorization
             raise( UserDoesntImplementRoles, "User doesn't implement #has_role?" ) if not @current_user.respond_to? :has_role?
             @stack.push( @current_user.has_role?(role_name) )
           end
-          true 
+          true
         else
           false
         end
       end
-      
+
     end
   end
 end

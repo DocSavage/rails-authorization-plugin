@@ -3,12 +3,12 @@ require File.dirname(__FILE__) + '/identity'
 
 module Authorization
   module ObjectRolesTable
-  
+
     module UserExtensions
       def self.included( recipient )
         recipient.extend( ClassMethods )
       end
-      
+
       module ClassMethods
         def acts_as_authorized_user
           has_and_belongs_to_many :roles
@@ -16,7 +16,7 @@ module Authorization
           include Authorization::Identity::UserExtensions::InstanceMethods   # Provides all kinds of dynamic sugar via method_missing
         end
       end
-      
+
       module InstanceMethods
         # If roles aren't explicitly defined in user class then check roles table
         def has_role?( role_name, authorizable_obj = nil )
@@ -27,7 +27,7 @@ module Authorization
             role ? self.roles.exists?( role.id ) : false
           end
         end
-        
+
         def has_role( role_name, authorizable_obj = nil )
           role = get_role( role_name, authorizable_obj )
           if role.nil?
@@ -41,7 +41,7 @@ module Authorization
           end
           self.roles << role if role and not self.roles.exists?( role.id )
         end
-        
+
         def has_no_role( role_name, authorizable_obj = nil  )
           role = get_role( role_name, authorizable_obj )
           if role
@@ -51,66 +51,66 @@ module Authorization
         end
 
         private
-        
+
         def get_role( role_name, authorizable_obj )
           if authorizable_obj.is_a? Class
-            Role.find( :first, 
+            Role.find( :first,
                        :conditions => [ 'name = ? and authorizable_type = ? and authorizable_id IS NULL', role_name, authorizable_obj.to_s ] )
           elsif authorizable_obj
-            Role.find( :first, 
-                       :conditions => [ 'name = ? and authorizable_type = ? and authorizable_id = ?', 
+            Role.find( :first,
+                       :conditions => [ 'name = ? and authorizable_type = ? and authorizable_id = ?',
                                         role_name, authorizable_obj.class.base_class.to_s, authorizable_obj.id ] )
           else
-            Role.find( :first, 
+            Role.find( :first,
                        :conditions => [ 'name = ? and authorizable_type IS NULL and authorizable_id IS NULL', role_name ] )
           end
         end
-        
-      end 
+
+      end
     end
-        
+
     module ModelExtensions
       def self.included( recipient )
         recipient.extend( ClassMethods )
       end
-      
+
       module ClassMethods
         def acts_as_authorizable
           has_many :accepted_roles, :as => :authorizable, :class_name => 'Role'
-          
+
           def accepts_role?( role_name, user )
-            user.has_role? role_name, self 
+            user.has_role? role_name, self
           end
-          
+
           def accepts_role( role_name, user )
             user.has_role role_name, self
           end
-          
+
           def accepts_no_role( role_name, user )
             user.has_no_role role_name, self
           end
-          
+
           include Authorization::ObjectRolesTable::ModelExtensions::InstanceMethods
           include Authorization::Identity::ModelExtensions::InstanceMethods   # Provides all kinds of dynamic sugar via method_missing
         end
       end
-      
+
       module InstanceMethods
         # If roles aren't overriden in model then check roles table
         def accepts_role?( role_name, user )
           user.has_role? role_name, self
         end
-        
+
         def accepts_role( role_name, user )
           user.has_role role_name, self
         end
-        
+
         def accepts_no_role( role_name, user )
           user.has_no_role role_name, self
         end
-      end    
+      end
     end
-    
+
   end
 end
 

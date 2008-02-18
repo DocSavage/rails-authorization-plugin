@@ -14,21 +14,21 @@ require File.dirname(__FILE__) + '/exceptions'
 #
 module Authorization
   module Identity
-    
+
     module UserExtensions
       module InstanceMethods
 
         def method_missing( method_sym, *args )
           method_name = method_sym.to_s
           authorizable_object = args.empty? ? nil : args[0]
-        
+
           base_regex = "is_(\\w+)"
           fancy_regex = base_regex + "_(#{Authorization::Base::VALID_PREPOSITIONS_PATTERN})"
           is_either_regex = '^((' + fancy_regex + ')|(' + base_regex + '))'
           base_not_regex = "is_no[t]?_(\\w+)"
-          fancy_not_regex = base_not_regex + "_(#{Authorization::Base::VALID_PREPOSITIONS_PATTERN})"      
+          fancy_not_regex = base_not_regex + "_(#{Authorization::Base::VALID_PREPOSITIONS_PATTERN})"
           is_not_either_regex = '^((' + fancy_not_regex + ')|(' + base_not_regex + '))'
-        
+
           if method_name =~ Regexp.new(is_either_regex + '_what$')
             role_name = $3 || $6
             has_role_for_objects(role_name)
@@ -48,9 +48,9 @@ module Authorization
             super
           end
         end
-      
+
         private
-      
+
         def is_role?( role_name, authorizable_object )
           if authorizable_object.nil?
             return self.has_role?(role_name)
@@ -59,7 +59,7 @@ module Authorization
           end
           false
         end
-      
+
         def is_no_role( role_name, authorizable_object = nil )
           if authorizable_object.nil?
             self.has_no_role role_name
@@ -67,7 +67,7 @@ module Authorization
             self.has_no_role role_name, authorizable_object
           end
         end
-      
+
         def is_role( role_name, authorizable_object = nil )
           if authorizable_object.nil?
             self.has_role role_name
@@ -75,11 +75,11 @@ module Authorization
             self.has_role role_name, authorizable_object
           end
         end
-      
+
         def has_role_for_objects(role_name)
           roles = self.roles.find_all_by_name( role_name )
           roles.collect do |role|
-            if role.authorizable_id.nil? 
+            if role.authorizable_id.nil?
               role.authorizable_type.nil? ?
                 nil : Module.const_get( role.authorizable_type )   # Returns class
             else
@@ -89,7 +89,7 @@ module Authorization
         end
       end
     end
-    
+
     module ModelExtensions
       module InstanceMethods
 
@@ -106,9 +106,9 @@ module Authorization
             super
           end
         end
-        
+
       end
     end
-      
+
   end
 end
