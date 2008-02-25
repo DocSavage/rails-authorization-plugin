@@ -9,6 +9,12 @@ TO DO
 
 CHANGES (from most recent to oldest)
 
+=== 1.0.4 release (February 25, 2008)
+
+* Bugfix : RubyForge bug #9368.  Problems with about.yml
+  Fixes a minor bug in the about.yml plugin metadata file
+  so that it will parse cleanly. [GR]
+
 === 1.0.3 release (February 17, 2008)
 
 * Minor changes to USAGE text for ./script/generate role_model
