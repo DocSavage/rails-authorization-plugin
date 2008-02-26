@@ -45,7 +45,7 @@ module Authorization
       end
 
       def replace_temporarily_role_of_model( str )
-        role_regex = '\s*(\'\s*(.+)\s*\'|(\w+))\s+'
+        role_regex = '\s*(\'\s*(.+?)\s*\'|(\w+))\s+'
         model_regex = '\s+(:*\w+)'
         parse_regex = Regexp.new(role_regex + '(' + VALID_PREPOSITIONS.join('|') + ')' + model_regex)
         str.gsub(parse_regex) do |match|
@@ -55,7 +55,7 @@ module Authorization
       end
 
       def replace_role( str )
-        role_regex = '\s*(\'\s*(.+)\s*\'|([A-Za-z]\w*))\s*'
+        role_regex = '\s*(\'\s*(.+?)\s*\'|([A-Za-z]\w*))\s*'
         parse_regex = Regexp.new(role_regex)
         str.gsub(parse_regex) do |match|
           if BOOLEAN_OPS.include?($3)
