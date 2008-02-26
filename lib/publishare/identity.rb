@@ -7,7 +7,8 @@ require File.dirname(__FILE__) + '/exceptions'
 #   user.is_member_of? this_workshop    --> Returns true/false. Must have authorizable object after query.
 #   user.is_eligible_for [this_award]   --> Gives user the role "eligible" for "this_award"
 #   user.is_moderator                   --> Gives user the general role "moderator" (not tied to any class or object)
-#   user.is_candidate_of_what           --> Returns array of objects for which this user is a "candidate"
+#   user.is_candidate_of_what           --> Returns array of objects for which this user is a "candidate" (any type)
+#   user.is_candidate_of_what(Party)    --> Returns array of objects for which this user is a "candidate" (only 'Party' type)
 #
 #   model.has_members                   --> Returns array of users which have role "member" on that model
 #   model.has_members?                  --> Returns true/false
@@ -31,7 +32,7 @@ module Authorization
 
           if method_name =~ Regexp.new(is_either_regex + '_what$')
             role_name = $3 || $6
-            has_role_for_objects(role_name)
+            has_role_for_objects(role_name, authorizable_object)
           elsif method_name =~ Regexp.new(is_not_either_regex + '\?$')
             role_name = $3 || $6
             not is_role?( role_name, authorizable_object )
@@ -76,8 +77,12 @@ module Authorization
           end
         end
 
-        def has_role_for_objects(role_name)
-          roles = self.roles.find_all_by_name( role_name )
+        def has_role_for_objects(role_name, type)
+          if type.nil?
+            roles = self.roles.find_all_by_name( role_name )
+          else
+            roles = self.roles.find_all_by_authorizable_type_and_name( type.name, role_name )
+          end
           roles.collect do |role|
             if role.authorizable_id.nil?
               role.authorizable_type.nil? ?

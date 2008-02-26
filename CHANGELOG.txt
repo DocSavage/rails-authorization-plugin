@@ -9,6 +9,24 @@ TO DO
 
 CHANGES (from most recent to oldest)
 
+=== 1.0.9 release (February 26, 2008)
+
+* Patch #8571 : Add type argument to is_role_of_what submitted by Aslak Hellesøy (aslak_hellesoy)
+
+  In my RESTful index views for an AR type I often want to list all of the records *for a given type* for which the current
+  user has the role "show". (As opposed to getting *any* record for which the user has the role)
+
+  In order to achieve this, I have patched identity.rb so tht I can do this:
+
+  def index
+    if current_user.permit? 'admin'
+      # show all projects
+      @projects = Project.find(:all)
+    else
+      @projects = current_user.is_show_for_what(Project)
+    end
+  end
+
 === 1.0.8 release (February 26, 2008)
 
 * Patch #11352 : Fixes a bug with role_regex and simple quoted roles submitted by 'a French RoR developer'
