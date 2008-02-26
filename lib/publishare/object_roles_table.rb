@@ -10,8 +10,8 @@ module Authorization
       end
 
       module ClassMethods
-        def acts_as_authorized_user
-          has_and_belongs_to_many :roles
+        def acts_as_authorized_user(roles_relationship_opts = {})
+          has_and_belongs_to_many :roles, roles_relationship_opts
           include Authorization::ObjectRolesTable::UserExtensions::InstanceMethods
           include Authorization::Identity::UserExtensions::InstanceMethods   # Provides all kinds of dynamic sugar via method_missing
         end

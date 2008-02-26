@@ -9,6 +9,15 @@ TO DO
 
 CHANGES (from most recent to oldest)
 
+=== 1.0.6 release (February 25, 2008)
+
+* Patch #12170 : Additional HABTM options for acts_as_authorized_user
+  A very simple patch that allows options to be passed to the has_and_belogs_to_many relationship. This seems necessary
+  if the "User" object has a different name from the table name. has_and_belong_to_many does not automatically
+  use the table set by the "User" object so it must be specified (along with the foreign key if applicable).
+
+  Patch submitted by Eric Anderson (eric1234)
+
 === 1.0.5 release (February 25, 2008)
 
 * Feature : Add additional test for current_user being set to the symbol ':false'.
