@@ -79,7 +79,7 @@ module Authorization
       end
 
       def process_role( role_name )
-        return false if @current_user.nil?
+        return false if @current_user.nil? || @current_user == :false
         raise( UserDoesntImplementRoles, "User doesn't implement #has_role?" ) if not @current_user.respond_to? :has_role?
         @current_user.has_role?( role_name )
       end
@@ -193,7 +193,7 @@ module Authorization
       def parse_role( str )
         if str =~ ROLE_REGEX
           role_name = $1
-          if @current_user.nil?
+          if @current_user.nil? || @current_user == :false
             @stack.push(false)
           else
             raise( UserDoesntImplementRoles, "User doesn't implement #has_role?" ) if not @current_user.respond_to? :has_role?

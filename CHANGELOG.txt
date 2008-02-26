@@ -9,6 +9,13 @@ TO DO
 
 CHANGES (from most recent to oldest)
 
+=== 1.0.5 release (February 25, 2008)
+
+* Feature : Add additional test for current_user being set to the symbol ':false'.
+  This is for compatibility with the restful_authentication plugin which will
+  set current_user to :false on a bad login.  Previously we were only testing
+  for current_user.nil? which was incomplete.
+
 === 1.0.4 release (February 25, 2008)
 
 * Bugfix : RubyForge bug #9368.  Problems with about.yml

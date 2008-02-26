@@ -66,7 +66,10 @@ module Authorization
       def has_permission?( authorization_expression )
         @current_user = get_user
         if not @options[:allow_guests]
-          if @current_user.nil?  # We aren't logged in, or an exception has already been raised
+          # We aren't logged in, or an exception has already been raised.
+          # Test for both nil and :false symbol as restful_authentication plugin
+          # will set current user to ':false' on a failed login (patch by Ho-Sheng Hsiao).
+          if @current_user.nil? || @current_user == :false
             return false
           elsif not @current_user.respond_to? :id
             raise( UserDoesntImplementID, "User doesn't implement #id")
