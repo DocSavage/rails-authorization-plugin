@@ -9,6 +9,23 @@ TO DO
 
 CHANGES (from most recent to oldest)
 
+=== 1.0.7 release (February 25, 2008)
+
+* Patch #9431 : Fixes a bug in identity.rb submitted by Michel Martens (blaumag)
+
+  If some authorizable instance accepts a role, then it responds true when queried for has_[role_name]?
+
+  Example:
+  country.has_kings? #=> false
+
+  user.has_role "king", country
+  country.has_kings? #=> true
+
+  user.has_no_role "king", country
+  country.has_kings? #=> true
+
+  The last time, country.has_kings? should be false.
+
 === 1.0.6 release (February 25, 2008)
 
 * Patch #12170 : Additional HABTM options for acts_as_authorized_user
