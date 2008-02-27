@@ -238,7 +238,7 @@ expression, we assume that it provides the <tt>accepts_role?(role, user)</tt> me
 
 Note that <tt>user</tt> can be <tt>nil</tt> if <tt>:allow_guests => true</tt>.
 
-==== #store_return_location (optional)
+==== #store_location (optional)
 
 This method will be called if authorization fails and the user is about to be redirected to
 the login action. This allows the application to return to the desired page after login.

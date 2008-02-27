@@ -9,7 +9,7 @@ module Authorization
       DEFAULT_REDIRECTION_HASH = { :controller => 'account', :action => 'login' }
     end
     if not Object.constants.include? "STORE_LOCATION_METHOD"
-      STORE_LOCATION_METHOD = :store_return_location
+      STORE_LOCATION_METHOD = :store_location
     end
 
     def self.included( recipient )
