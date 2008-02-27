@@ -42,7 +42,7 @@ Manual Install:
 == Steps in using the plugin
 
 1. At the top of your config/environment.rb create an AUTHORIZATION_MIXIN constant and set it to "object roles" or "hardwired". (See init.rb in this plugin for how the role support is mixed in.)
-2. Make sure your application provides a current_user method or something that returns the current user object. Add the constants in environment.rb to set your authentication systemís login page (DEFAULT_REDIRECTION_HASH) and method for storing the current URL for return after authentication (STORE_LOCATION_METHOD). (See authorization.rb in the plugin's /lib directory for the default values of DEFAULT_REDIRECTION_HASH and STORE_LOCATION_METHOD.)
+2. Make sure your application provides a current_user method or something that returns the current user object. Add the constants in environment.rb to set your authentication system's login page (LOGIN_REQUIRED_REDIRECTION), permission denied page (PERMISSION_DENIED_REDIRECTION) and method for storing the current URL for return after authentication (STORE_LOCATION_METHOD). (See authorization.rb in the plugin's /lib directory for the default values of LOGIN_REQUIRED_REDIRECTION, PERMISSION_DENIED_REDIRECTION and STORE_LOCATION_METHOD.)
 3. If you use the "hardwired" mixin, no database use is required. Otherwise, you'll have to generate a role.rb model (and its associated join table with User) by running "script/generate role_model Role" and doing "rake migrate".
 4. Add <tt>acts_as_authorized_user</tt> to your user class.
 5. Add <tt>acts_as_authorizable</tt> to the models you want to query for roles.
@@ -138,11 +138,13 @@ Parentheses should be used to clarify permissions. Note that you may prefix the 
 
 <tt>:redirect => bool</tt>. default is <tt>true</tt>. If <tt>false</tt>, permit will not redirect to denied page.
 
-<tt>:redirect_controller => controller</tt> that handles authorization failure (default is 'account')
+<tt>:login_required_redirection => path or hash</tt> where user will be redirected if not logged in (default is "{ :controller => 'session', :action => 'new' }")
 
-<tt>:redirect_action => action</tt> that handles authorization failure (default is 'login')
+<tt>:login_required_message => 'my message'</tt> (default is 'Login is required to access the requested page.')
 
-<tt>:redirect_message => 'my message'</tt>. (default is 'Login is required')
+<tt>:permission_denied_redirection => path or hash</tt> where user will be redirected if logged in but not authorized (default is '')
+
+<tt>:permission_denied_message => 'my message</tt> (default is 'Permission denied. You cannot access the requested page.')
 
 === Setting and getting the roles
 
@@ -245,8 +247,8 @@ the login action. This allows the application to return to the desired page afte
 If the application doesn't provide this method, the method will not be called.
 
 The name of the method for storing a location can be modified by changing the constant
-STORE_LOCATION_METHOD in environment.rb. Also, the default login page is defined by the
-constant DEFAULT_REDIRECTION_HASH in authorization.rb and can be overriden in your environment.rb.
+STORE_LOCATION_METHOD in environment.rb. Also, the default login and permission denied pages are defined by the
+constants LOGIN_REQUIRED_REDIRECTION and PERMISSION_DENIED_REDIRECTION in authorization.rb and can be overriden in your environment.rb.
 
 === Conventions
 
