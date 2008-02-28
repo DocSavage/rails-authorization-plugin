@@ -9,6 +9,22 @@ TO DO
 
 CHANGES (from most recent to oldest)
 
+
+=== 1.0.10 release (February 27, 2008)
+
+* Patch Series : Granular redirection configuration submitted by Thomas Weibel
+
+  WARNING : If you are upgrading from a previous install you may need
+  to change some configuration settings in your environment.rb file.
+
+  Remove DEFAULT_REDIRECTION_HASH config
+  Added granular LOGIN_REQUIRED_REDIRECTION hash or path config
+  Added granular PERMISSION_DENIED_REDIRECTION hash or path config
+  Added STORE_LOCATION_METHOD config
+  Support custom flash messages for each redirection type
+  Updated README.txt to provide instructions.
+  Enhanced support for integration with restful_authentication plugin.
+
 === 1.0.9 release (February 26, 2008)
 
 * Patch #8571 : Add type argument to is_role_of_what submitted by Aslak Hellesøy (aslak_hellesoy)
