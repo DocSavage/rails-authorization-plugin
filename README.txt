@@ -39,25 +39,40 @@ The authorization plugin provides the following:
 == Installation
 
 There are currently two recommended ways of installing the plugin into your
-Rails application, via Git (Recommended) and a manual install from a .zip file.
+Rails application, direct from our Subversion mirror (recommended),
+or via Git as a sub-module.
+
+Standard Install:
+
+While our primary source code is installed in a Git repository we also
+maintain an SVN mirror on GoogleCode.  You can install the plugin with
+the standard ./script/plugin install command:
+
+From your RAILS_ROOT directory run:
+
+  ./script/plugin install http://rails-authorization-plugin.googlecode.com/svn/trunk authorization
+
+(Note the space before the final 'authorization')
+
 
 Install using Git:
 
 The source code for this plugin is maintained in a Git SCM repository.  This
-will always have the latest version of the code and is the recommended source
-for installation.  You can install the plugin using Git sub-modules (which are
-akin to using SVN externals).  Installing this way allows you to update the
-plugin code later if needed (but note that it will not update any generated
-code created earlier by this plugin, you would need to do that manually).
+will always have the latest version of the code.  You can install the plugin
+using Git sub-modules (which are akin to using SVN externals).  Installing
+this way allows you to update the plugin code later if needed (but note that
+it will not update any generated code created earlier by this plugin, you
+would need to do that manually).  Also note that if you are deploying your
+code using Capistrano this method may cause issues.
 
 From your RAILS_ROOT directory run:
 
-git-submodule add git://github.com/DocSavage/rails-authorization-plugin.git vendor/plugins/authorization
+  git-submodule add git://github.com/DocSavage/rails-authorization-plugin.git vendor/plugins/authorization
 
 You should be able to update this plugin in the future with a simple 'git
 submodule update' from your rails root.
 
-Manual Install:
+Manual Install (Deprecated, and not recommended):
 
 * Download the latest .zip file of the plugin from RubyForge (
   http://rubyforge.org/frs/?group_id=1797 ) and save it to your
