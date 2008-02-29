@@ -55,9 +55,7 @@ Step 2 (Standard install, recommended)
 
 Run the following command in your RAILS_ROOT:
 
-./script/plugin install http://rails-authorization-plugin.googlecode.com/svn/trunk authorization
-
-Please Note : There is a space before the final 'authorization' in that command.
+./script/plugin install http://rails-authorization-plugin.googlecode.com/svn/trunk/authorization
 
 This will install the latest version of the plugin from SVN trunk
 into your RAILS_ROOT/vendor/plugins/authorization directory.
