@@ -1,6 +1,8 @@
 = Authorization plugin
 
-http://www.writertopia.com/developers/authorization
+See the following wiki page for the latest version of this documentation:
+
+http://code.google.com/p/rails-authorization-plugin/w/list
 
 This plugin provides a flexible way to add authorization to Rails.
 
@@ -11,14 +13,14 @@ systems available for Rails, e.g., acts_as_authenticated and LoginEngine. This
 authorization system will play nicely with them as long as some simple
 requirements are met:
 
-1. User objects are available that implement a <tt>has_role?(role,
-   authorizable_object = nil)</tt> method. This requirement can be easily
-   handled by using <tt>acts_as_authorized_user</tt> in the User-like class.
+1. User objects are available that implement a has_role?(role,
+   authorizable_object = nil) method. This requirement can be easily
+   handled by using acts_as_authorized_user in the User-like class.
 
 2. If you want to use "role of model" authorization expressions, like "owner of
    resource" or "eligible for :award", then your models with roles must
-   implement an <tt>accepts_role?(role, user)</tt> method. This requirement can
-   be handled by using <tt>acts_as_authorizable</tt> in the model class.
+   implement an accepts_role?(role, user) method. This requirement can
+   be handled by using acts_as_authorizable in the model class.
 
 The authorization plugin provides the following:
 
@@ -38,116 +40,187 @@ The authorization plugin provides the following:
 
 == Installation
 
-There are currently two recommended ways of installing the plugin into your
-Rails application, direct from our Subversion mirror (recommended),
-or via Git as a sub-module.
+Installation Instructions
 
-Standard Install:
+Installation of the Authorization plugin is quick and easy.
 
-While our primary source code is installed in a Git repository we also
-maintain an SVN mirror on GoogleCode.  You can install the plugin with
-the standard ./script/plugin install command:
+Step 1
+
+Open a terminal and change directory to the root of your
+Ruby on Rails application referred to here as 'RAILS_ROOT'. You
+can choose to install the plugin in the standard recommended way,
+or as a Git sub-module.
+
+Step 2 (Standard install, recommended)
+
+Run the following command in your RAILS_ROOT:
+
+./script/plugin install http://rails-authorization-plugin.googlecode.com/svn/trunk authorization
+
+Please Note : There is a space before the final 'authorization' in that command.
+
+This will install the latest version of the plugin from SVN trunk
+into your RAILS_ROOT/vendor/plugins/authorization directory.
+
+Step 2 (Alternative install using Git sub-module, for
+advanced users of the Git SCM)
+
+The source code for this plugin is maintained in a Git SCM
+repository (The code in the SVN repository here at Google
+Code is a read-only mirror). The Git repository will always
+have the latest version of the code.
+
+You can install the plugin using Git sub-modules (which
+are akin to using SVN externals). Installing this way allows
+you to update the plugin code later if needed (but note that
+it will not update any generated code created earlier by this
+plugin such as migrations, you will need to update that manually).
+Also note that if you are deploying your code using Capistrano
+this method may cause issues if you are not careful (e.g. the code
+will be deployed but the sub-modules will not be updated or
+installed at all).
 
 From your RAILS_ROOT directory run:
 
-  ./script/plugin install http://rails-authorization-plugin.googlecode.com/svn/trunk authorization
+git submodule add git://github.com/DocSavage/rails-authorization-plugin.git vendor/plugins/authorization
 
-(Note the space before the final 'authorization')
+You should be able to update this plugin in the future with
+the simple command (again from RAILS_ROOT):
 
-
-Install using Git:
-
-The source code for this plugin is maintained in a Git SCM repository.  This
-will always have the latest version of the code.  You can install the plugin
-using Git sub-modules (which are akin to using SVN externals).  Installing
-this way allows you to update the plugin code later if needed (but note that
-it will not update any generated code created earlier by this plugin, you
-would need to do that manually).  Also note that if you are deploying your
-code using Capistrano this method may cause issues.
-
-From your RAILS_ROOT directory run:
-
-  git-submodule add git://github.com/DocSavage/rails-authorization-plugin.git vendor/plugins/authorization
-
-You should be able to update this plugin in the future with a simple 'git
-submodule update' from your rails root.
-
-Manual Install (Deprecated, and not recommended):
-
-* Download the latest .zip file of the plugin from RubyForge (
-  http://rubyforge.org/frs/?group_id=1797 ) and save it to your
-  RAILS_ROOT/vendor/plugins folder.
-
-* Unpack the zip file which should create the directory
-  vendor/plugins/authorization
-
-* Remove the original .zip file.
+git submodule update
 
 
-== Steps in using the plugin
+== Configuration
 
-1. At the top of your config/environment.rb create an AUTHORIZATION_MIXIN
-   constant and set it to "object roles" or "hardwired". (See init.rb in this
-   plugin for how the role support is mixed in.)
+These instructions will show you how to do the initial configuration
+of the plugin.
 
-2. Make sure your application provides a current_user method or something that
-   returns the current user object. Add the constants in environment.rb to set
-   your authentication system's login page (LOGIN_REQUIRED_REDIRECTION),
-   permission denied page (PERMISSION_DENIED_REDIRECTION) and method for
-   storing the current URL for return after authentication
-   (STORE_LOCATION_METHOD). (See authorization.rb in the plugin's /lib
-   directory for the default values of LOGIN_REQUIRED_REDIRECTION,
-   PERMISSION_DENIED_REDIRECTION and STORE_LOCATION_METHOD.)
+Choose a Mixin Type
 
-3. If you use the "hardwired" mixin, no database use is required. Otherwise,
-   you'll have to generate a role.rb model (and its associated join table with
-   User) by running "script/generate role_model Role" and doing "rake migrate".
+Hardwired Roles
+This is the simplest way to use the plugin and requires no database.
+Roles are assumed to be coded into the Model classes using the
+has_role?(role, obj = nil) method. This method is however more
+limited in the functionality available to you.
 
-4. Add <tt>acts_as_authorized_user</tt> to your user class.
-
-5. Add <tt>acts_as_authorizable</tt> to the models you want to query for roles.
-
-== Jumpstarting with a mixin
-
-The Authorization plugin comes with two modules that provide different levels
-of database support.  Each of the mixins provide the
-<tt>acts_as_authorized_user</tt> and <tt>acts_as_authorizable</tt> class
-methods for your models. If you use one of those declarations, you get methods
-that handle authorization with different database schemes. A full test web
-application is provided for each of the modules so you can see how they
-work. The "Object Roles Table" version is recommended for normal use and is the
-default.
-
-=== 1) Hardwired Roles
-
-This is the simplest and requires no database. Roles are assumed to be coded
-into the Model classes using the <tt>has_role?(role, obj = nil)</tt> method.
-
-=== 2) Object Roles Table
-
+Object Roles (Recommended, DB Required)
 The Object Roles Table mixin provides full support for authorization
-expressions within a database by add a polymorphic field to the Role
-table. Because roles have polymorphic associations to an authorizable object,
-we can assign a user to a role for any model instance. So you could declare
-user X to be a moderator for workshop Y, or you could make user A be the owner
-of resource B.
+expressions within a database by add a polymorphic field to the
+Role table. Because roles have polymorphic associations to an
+authorizable object, we can assign a user to a role for any model
+instance. So you could declare user X to be a moderator for workshop Y,
+or you could make user A be the owner of resource B.
 
 The identity module adds a number of dynamic methods that use defined
-roles. The user-like model gets methods like <tt>user.is_moderator_of
-group</tt> (sets user to "moderator" of <tt>group</tt>),
-<tt>user.is_moderator?</tt> (returns true/false if user has some role
-"moderator"), and <tt>group.has_moderators</tt> (returns an array of users that
-have role "moderator" for the group).  If you prefer not to have these dynamic
-methods available, you can simply comment out the inclusion of the identity
-module within object_roles_table.rb.
+roles. The user-like model gets methods like `user.is_moderator_of
+group (sets user to "moderator" of group`), user.is_moderator? (returns
+true/false if user has some role "moderator"), and group.has_moderators
+(returns an array of users that have role "moderator" for the group). If
+you prefer not to have these dynamic methods available, you can simply
+comment out the inclusion of the identity module within object_roles_table.rb.
 
-=== Migrations and Testing
+Initial Configuration Instructions
 
-Each mixin's test web application comes with migrations to set up the database
-for the associated mixin.  After reading the Rails Recipe on domain specific
-languages (DSLs) for testing, I added integration tests for each mixin test app
-that use a simple vocabulary for testing authorization. The object_roles_test
-application has the most tests. Please contribute tests to improve coverage.
+Choose one of the installation types identified above and make sure your
+application provides a current_user method or something that returns the
+current user object (resful_authentication provides this out of the box).
+
+At the top of your RAILS_ROOT/config/environment.rb file add something
+like the following (customized for your controllers and actions of course):
+
+...
+
+# Authorization plugin for role based access control
+# You can override default authorization system constants here.
+
+# Can be 'object roles' or 'hardwired'
+AUTHORIZATION_MIXIN = "object roles"
+
+# NOTE : If you use modular controllers like '/admin/products' be sure
+# to redirect to something like '/sessions' controller (with a leading slash)
+# as shown in the example below or you will not get redirected properly
+#
+# This can be set to a hash or to an explicit path like '/login'
+#
+LOGIN_REQUIRED_REDIRECTION = { :controller => '/sessions', :action => 'new' }
+PERMISSION_DENIED_REDIRECTION = { :controller => '/home', :action => 'index' }
+
+# The method your auth scheme uses to store the location to redirect back to
+STORE_LOCATION_METHOD = :store_location
+
+# standard rails config below here
+Rails::Initializer.run do |config|
+
+...
+
+Set the AUTHORIZATION_MIXIN constant to object roles or hardwired.
+(See init.rb in this plugin for how the role support is mixed in.)
+
+Set the LOGIN_REQUIRED_REDIRECTION to match the path or a hash with
+the :controller and :action for your applications login page.
+
+Set the PERMISSION_DENIED_REDIRECTION to match the path or a hash
+with the :controller and :action for your applications permission denied page.
+
+Set the STORE_LOCATION_METHOD to the method your application uses for
+storing the current URL that the user should return to after
+authentication (e.g. store_location).
+
+See the PLUGIN_DIR\lib\authorization.rb file for the default values
+of LOGIN_REQUIRED_REDIRECTION, PERMISSION_DENIED_REDIRECTION and STORE_LOCATION_METHOD.
+
+
+Create the database tables
+
+If you plan to use the object roles method you will need to setup a few
+database tables. We have provided a database migration file
+(Rails 2.0+ compatible) that will make this process easy for you.
+If you plan to use the hardwired mixin, no extra database tables
+are required. and you can skip to the next step.
+
+Run the following command from your RAILS_ROOT (Note : The generator
+takes a model name as its argument, which at this time must be 'Role'.):
+
+./script/generate role_model Role
+
+This will create:
+
+  Model:             RAILS_ROOT/app/models/role.rb
+  Test:                RAILS_ROOT/test/unit/role_test.rb
+  Fixtures:         RAILS_ROOT/test/fixtures/roles.yml
+  Migration:      RAILS_ROOT/db/migrate/###_add_role.rb
+
+And now you will need to run a database migration from your RAILS_ROOT:
+
+rake db:migrate
+
+Jumpstarting with a mixin
+
+Now we need to add the methods needed by each of your models that will
+participate in role based authorization. Typically these models fall into
+two categories, the User model, and all other models that will have
+roles available for use.
+
+For a typical installation you would add both mixins to your User model.
+
+class User < ActiveRecord::Base
+
+  # Authorization plugin
+  acts_as_authorized_user
+  acts_as_authorizable
+
+...
+
+Then in each additional model that you want to be able to restrict based
+on role you would add just the acts_as_authorizable mixin like this:
+
+class Event < ActiveRecord::Base
+
+  acts_as_authorizable
+
+...
+
+You are done with the configuration!
 
 
 == The Specifics
@@ -375,4 +448,6 @@ Roles specified with "of model" designation:
 === More information
 
 Information on this plugin and other development can be found at
-http://www.writertopia.com/developers
+the project home page:
+
+http://code.google.com/p/rails-authorization-plugin/
