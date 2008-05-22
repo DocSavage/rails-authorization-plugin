@@ -50,6 +50,17 @@ module Authorization
           end
         end
 
+        def has_roles_for?( authorizable_obj )
+          if authorizable_obj.is_a? Class
+            !self.roles.detect { |role| role.authorizable_type == authorizable_obj.to_s }.nil?
+          elsif authorizable_obj
+            !self.roles.detect { |role| role.authorizable_type == authorizable_obj.class.base_class.to_s && role.authorizable == authorizable_obj }.nil?
+          else
+            !self.roles.detect { |role| role.authorizable.nil? }.nil?
+          end
+        end
+        alias :has_role_for? :has_roles_for?
+
         private
 
         def get_role( role_name, authorizable_obj )
