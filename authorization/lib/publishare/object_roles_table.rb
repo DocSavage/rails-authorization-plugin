@@ -61,6 +61,28 @@ module Authorization
         end
         alias :has_role_for? :has_roles_for?
 
+        def roles_for( authorizable_obj )
+          if authorizable_obj.is_a? Class
+            self.roles.select { |role| role.authorizable_type == authorizable_obj.to_s }
+          elsif authorizable_obj
+            self.roles.select { |role| role.authorizable_type == authorizable_obj.class.base_class.to_s && role.authorizable.id == authorizable_obj.id }
+          else
+            self.roles.select { |role| role.authorizable.nil? }
+          end
+        end
+
+        def authorizables_for( authorizable_class )
+          unless authorizable_class.is_a? Class
+            raise CannotGetAuthorizables, "Invalid argument: '#{authorizable_class}'. You must provide a class here."
+          end
+          self.roles.inject([]) do |result, role|
+            if role.authorizable_type == authorizable_class.to_s && !result.include?(role.authorizable)
+              result << role.authorizable
+            end
+            result
+          end
+        end
+
         private
 
         def get_role( role_name, authorizable_obj )
@@ -101,6 +123,19 @@ module Authorization
             user.has_no_role role_name, self
           end
 
+          def accepts_roles_by?( user )
+            user.has_roles_for? self
+          end
+          alias :accepts_role_by? :accepts_roles_by?
+
+          def accepted_roles_by( user )
+            user.roles_for self
+          end
+
+          def authorizables_by( user )
+            user.authorizables_for self
+          end
+
           include Authorization::ObjectRolesTable::ModelExtensions::InstanceMethods
           include Authorization::Identity::ModelExtensions::InstanceMethods   # Provides all kinds of dynamic sugar via method_missing
         end
@@ -119,6 +154,16 @@ module Authorization
         def accepts_no_role( role_name, user )
           user.has_no_role role_name, self
         end
+
+        def accepts_roles_by?( user )
+          user.has_roles_for? self
+        end
+        alias :accepts_role_by? :accepts_roles_by?
+
+        def accepted_roles_by( user )
+          user.roles_for self
+        end
+
       end
     end
 
