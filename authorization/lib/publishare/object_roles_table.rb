@@ -75,12 +75,13 @@ module Authorization
           unless authorizable_class.is_a? Class
             raise CannotGetAuthorizables, "Invalid argument: '#{authorizable_class}'. You must provide a class here."
           end
-          self.roles.inject([]) do |result, role|
+          authorizables = self.roles.inject([]) do |result, role|
             if role.authorizable_type == authorizable_class.to_s && !result.include?(role.authorizable)
               result << role.authorizable
             end
             result
           end
+          authorizables.compact
         end
 
         private
