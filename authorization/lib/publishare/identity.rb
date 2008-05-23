@@ -98,6 +98,11 @@ module Authorization
     module ModelExtensions
       module InstanceMethods
 
+        def users
+          users = self.accepted_roles.collect { |role| role.users }
+          users.flatten.uniq if users
+        end
+
         def method_missing( method_sym, *args )
           method_name = method_sym.to_s
           if method_name =~ /^has_(\w+)\?$/
