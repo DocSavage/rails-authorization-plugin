@@ -493,3 +493,6 @@ Roles specified with "of model" designation:
    in the manner above) to <tt>model.accepts_role?</tt>
 
 
+== Developers Note : Contributing Patches
+
+Please see the file README_developers.txt for the methods we would like you to use to submit new code features, bugfixes and patches.

@@ -1,3 +1,3 @@
-Tests for Authorization plugin are handled by tests within
-the test apps for each type of mixin.
-See http://www.writertopia.com/developers/authorization
+The tests for this plugin are maintained in a sample
+Ruby on Rails application.  Please see the file
+README_developers.txt for additional information.
