@@ -121,7 +121,7 @@ the simple command (again from RAILS_ROOT):
 
   git submodule update
 
-==== Step 2c (Alternative manual install from tarball)
+=== Step 2c (Alternative manual install from tarball)
 
 If you like to install the old school manual way, feel free to download a copy of the plugin code from:
 
