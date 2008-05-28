@@ -318,9 +318,11 @@ current user object. The default is false.
 
   :user => YourUserObject.
 
-:get_user_method => method_name
+The name of your user object.
 
-Method name is a method that will return a user
+  :get_user_method => method_name
+
+The method name provided should return a user
 object. Default is #current_user, which is the how
 acts_as_authenticated works.
 
@@ -332,7 +334,7 @@ Array of methods to apply permit (not valid when used in instance methods)
 
 Array of methods that won't have permission checking (not valid when used in instance methods)
 
-:redirect => boolean
+  :redirect => boolean
 
 Default is true. If false, permit will not redirect to denied page.
 
