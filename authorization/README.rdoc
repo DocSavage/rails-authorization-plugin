@@ -217,10 +217,10 @@ takes a model name as its argument, which at this time must be 'Role'.):
 
 This will create:
 
-  Model:             RAILS_ROOT/app/models/role.rb
-  Test:                RAILS_ROOT/test/unit/role_test.rb
-  Fixtures:         RAILS_ROOT/test/fixtures/roles.yml
-  Migration:      RAILS_ROOT/db/migrate/###_add_role.rb
+  Model:      RAILS_ROOT/app/models/role.rb
+  Test:       RAILS_ROOT/test/unit/role_test.rb
+  Fixtures:   RAILS_ROOT/test/fixtures/roles.yml
+  Migration:  RAILS_ROOT/db/migrate/###_add_role.rb
 
 And now you will need to run a database migration from your RAILS_ROOT:
 
@@ -311,36 +311,49 @@ models unambiguous.
 
 ==== Options
 
-<tt>:allow_guests => false</tt>. We can allow permission processing without a
-current user object. The default is <tt>false</tt>.
+  :allow_guests => false.
 
-<tt>:user</tt> => A <tt>user</tt> object.
+We can allow permission processing without a
+current user object. The default is false.
 
-<tt>:get_user_method => method</tt> that will return a <tt>user</tt>
-object. Default is <tt>#current_user</tt>, which is the how
-<tt>acts_as_authenticated</tt> works.
+  :user => YourUserObject.
 
-<tt>:only => [ :method1, :method2 ]</tt>. Array of methods to apply permit (not
-valid when used in instance methods)
+:get_user_method => method_name
 
-<tt>:except => [ :method1, :method2 ]</tt>. Array of methods that won't have
-permission checking (not valid when used in instance methods)
+Method name is a method that will return a user
+object. Default is #current_user, which is the how
+acts_as_authenticated works.
 
-<tt>:redirect => bool</tt>. default is <tt>true</tt>. If <tt>false</tt>, permit
-will not redirect to denied page.
+  :only => [ :method1, :method2 ]
 
-<tt>:login_required_redirection => path or hash</tt> where user will be
-redirected if not logged in (default is "{ :controller => 'session', :action =>
-'new' }")
+Array of methods to apply permit (not valid when used in instance methods)
 
-<tt>:login_required_message => 'my message'</tt> (default is 'Login is required
-to access the requested page.')
+  :except => [ :method1, :method2 ]
 
-<tt>:permission_denied_redirection => path or hash</tt> where user will be
-redirected if logged in but not authorized (default is '')
+Array of methods that won't have permission checking (not valid when used in instance methods)
 
-<tt>:permission_denied_message => 'my message</tt> (default is 'Permission
-denied. You cannot access the requested page.')
+:redirect => boolean
+
+Default is true. If false, permit will not redirect to denied page.
+
+  :login_required_redirection => path or hash
+
+  default is "{ :controller => 'session', :action => 'new' }"
+
+Path or Hash where user will be redirected if not logged in ()
+
+  :login_required_message => 'my message'
+
+A string to present to your users when login is required. Default is 'Login is required to access the requested page.'
+
+  :permission_denied_redirection => path or hash
+
+Path or Hash where user will be redirected if logged in but not authorized (default is '')
+
+  :permission_denied_message => 'my message'
+
+Message that will be presented to the user when permission is denied.  Default is 'Permission
+denied. You cannot access the requested page.'
 
 === Setting and getting the roles
 
