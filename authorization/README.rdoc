@@ -1,9 +1,5 @@
 = Authorization plugin
 
-See the following wiki page for the latest version of this documentation:
-
-http://code.google.com/p/rails-authorization-plugin/w/list
-
 This plugin provides a flexible way to add authorization to Rails.
 
 The authorization process decides whether a user is allowed access to some
@@ -38,6 +34,48 @@ The authorization plugin provides the following:
   all the features, you will want to use "object roles table" (see below)
 
 
+== Example Usage
+
+  class MeetingController < ApplicationController
+
+    permit "rubyists and wanna_be_rubyists", :except => :public_page
+
+    def public_page
+      render :text => "We're all in Chicago"
+    end
+
+    def secret_info
+      permit "interested in Answers and (matz or dhh)" do
+        render :text => "The Answer = 42"
+      end
+    end
+
+    def find_apprentice
+      @founder = User.find_by_name('matz')
+      permit "'inner circle' of :founder" do
+        if request.post?
+          apprentice = User.find_by_skillset(params[:uber_hacker])
+          ruby_community = Group.find_by_name('Ruby')
+          ruby_community.accepts_role 'yarv_builder', apprentice
+        end
+      end
+    end
+
+    def rails_conf
+      @meeting = Meeting.find_by_name('RailsConf')
+      permit "attendees of :meeting or swedish_mensa_supermodels" do
+        venue = Hotel.find_by_name("Wyndham O'Hare")
+        current_user.is_traveller_to venue
+        if permit? "traveller to :venue and not speaker"
+          Partay.all_night_long
+          @misdeeds = current_user.is_participant_in_what
+        end
+      end
+    end
+
+  end
+
+
 == Installation
 
 Installation of the Authorization plugin is quick and easy.
@@ -46,12 +84,10 @@ Installation of the Authorization plugin is quick and easy.
 
 Open a terminal and change directory to the root of your
 Ruby on Rails application referred to here as 'RAILS_ROOT'. You
-can choose to install the plugin in the standard recommended way,
-or as a Git sub-module.
+can choose to install the plugin using the standard Ruby on Rails tools (recommended),
+as a Git sub-module, or by grabbing a tarball.
 
-=== Step 2 
-
-==== Standard install, recommended
+=== Step 2a (Standard install, recommended)
 
 Run the following command in your RAILS_ROOT:
 
@@ -60,18 +96,17 @@ Run the following command in your RAILS_ROOT:
 This will install the latest version of the plugin from SVN trunk
 into your RAILS_ROOT/vendor/plugins/authorization directory.
 
-==== Alternative install using Git sub-module, for users of git
+=== Step 2b (Alternative install using Git sub-module, for advanced users of the Git SCM)
 
 The source code for this plugin is maintained in a Git SCM
-repository (The code in the SVN repository here at Google
-Code is a read-only mirror). The Git repository will always
-have the latest version of the code.
+repository. The Git repository will always have the latest
+version of the code.
 
 You can install the plugin using Git sub-modules (which
 are akin to using SVN externals). Installing this way allows
 you to update the plugin code later if needed (but note that
 it will not update any generated code created earlier by this
-plugin such as migrations, you will need to update that manually).
+plugin such as migrations, which you will need to update manually).
 Also note that if you are deploying your code using Capistrano
 this method may cause issues if you are not careful (e.g. the code
 will be deployed but the sub-modules will not be updated or
@@ -86,7 +121,7 @@ the simple command (again from RAILS_ROOT):
 
   git submodule update
 
-==== Alternative manual install
+==== Step 2c (Alternative manual install from tarball)
 
 If you like to install the old school manual way, feel free to download a copy of the plugin code from:
 
@@ -109,7 +144,7 @@ Roles are assumed to be coded into the Model classes using the
 <tt>has_role?(role, obj = nil)</tt> method. This method is however more
 limited in the functionality available to you.
 
-==== Object Roles (Recommended, DB Required) 
+==== Object Roles (Recommended, DB Required)
 
 The Object Roles Table mixin provides full support for authorization
 expressions within a database by add a polymorphic field to the
@@ -136,13 +171,13 @@ At the top of your RAILS_ROOT/config/environment.rb file add something
 like the following (customized for your controllers and actions of course):
 
   ...
-  
+
   # Authorization plugin for role based access control
   # You can override default authorization system constants here.
-  
+
   # Can be 'object roles' or 'hardwired'
   AUTHORIZATION_MIXIN = "object roles"
-  
+
   # NOTE : If you use modular controllers like '/admin/products' be sure
   # to redirect to something like '/sessions' controller (with a leading slash)
   # as shown in the example below or you will not get redirected properly
@@ -151,13 +186,13 @@ like the following (customized for your controllers and actions of course):
   #
   LOGIN_REQUIRED_REDIRECTION = { :controller => '/sessions', :action => 'new' }
   PERMISSION_DENIED_REDIRECTION = { :controller => '/home', :action => 'index' }
-  
+
   # The method your auth scheme uses to store the location to redirect back to
   STORE_LOCATION_METHOD = :store_location
-  
+
   # standard rails config below here
   Rails::Initializer.run do |config|
-  
+
   ...
 
 * Set the AUTHORIZATION_MIXIN constant to object roles or hardwired.  (See init.rb in this plugin for how the role support is mixed in.)
@@ -201,20 +236,20 @@ roles available for use.
 For a typical installation you would add both mixins to your User model.
 
   class User < ActiveRecord::Base
-  
+
     # Authorization plugin
     acts_as_authorized_user
     acts_as_authorizable
-  
+
   ...
 
 Then in each additional model that you want to be able to restrict based
 on role you would add just the acts_as_authorizable mixin like this:
 
   class Event < ActiveRecord::Base
-  
+
     acts_as_authorizable
-  
+
   ...
 
 You are done with the configuration!
@@ -442,9 +477,4 @@ Roles specified with "of model" designation:
 3. Once the model object is determined, we pass the role and user (determined
    in the manner above) to <tt>model.accepts_role?</tt>
 
-=== More information
 
-Information on this plugin and other development can be found at
-the project home page:
-
-http://code.google.com/p/rails-authorization-plugin/
