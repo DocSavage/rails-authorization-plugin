@@ -110,7 +110,7 @@ module Authorization
 
       module ClassMethods
         def acts_as_authorizable
-          has_many :accepted_roles, :as => :authorizable, :class_name => 'Role'
+          has_many :accepted_roles, :as => :authorizable, :class_name => 'Role', :dependent => :destroy
 
           def accepts_role?( role_name, user )
             user.has_role? role_name, self
