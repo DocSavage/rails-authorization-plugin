@@ -100,18 +100,18 @@ module Authorization
 
         def users
           users = self.accepted_roles.collect { |role| role.users }
-          users.flatten.uniq if users
+          users.flatten.compact.uniq if users
         end
 
         def method_missing( method_sym, *args )
           method_name = method_sym.to_s
           if method_name =~ /^has_(\w+)\?$/
             role_name = $1.singularize
-            self.accepted_roles.find_all_by_name(role_name).any? { |role| role.users.any? }
+            self.accepted_roles.find_all_by_name(role_name).any? { |role| role.users.compact.any? }
           elsif method_name =~ /^has_(\w+)$/
             role_name = $1.singularize
             users = self.accepted_roles.find_all_by_name(role_name).collect { |role| role.users }
-            users.flatten.uniq if users
+            users.flatten.compact.uniq if users
           else
             super
           end
