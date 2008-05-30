@@ -76,7 +76,8 @@ module Authorization
           # We aren't logged in, or an exception has already been raised.
           # Test for both nil and :false symbol as restful_authentication plugin
           # will set current user to ':false' on a failed login (patch by Ho-Sheng Hsiao).
-          if @current_user.nil? || @current_user == :false
+          # Latest incarnations of restful_authentication plugin set current user to false.
+          if @current_user.nil? || @current_user == :false || @current_user == false
             return false
           elsif not @current_user.respond_to? :id
             raise( UserDoesntImplementID, "User doesn't implement #id")
@@ -94,7 +95,7 @@ module Authorization
         # Store url in session for return if this is available from
         # authentication
         send( STORE_LOCATION_METHOD ) if respond_to? STORE_LOCATION_METHOD
-        if @current_user && !@current_user.nil? && @current_user != :false
+        if @current_user && @current_user != :false
           flash[:notice] = @options[:permission_denied_message] || "Permission denied. You cannot access the requested page."
           redirect_to @options[:permission_denied_redirection] || PERMISSION_DENIED_REDIRECTION
         else
