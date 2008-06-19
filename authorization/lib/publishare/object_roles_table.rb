@@ -75,9 +75,13 @@ module Authorization
           unless authorizable_class.is_a? Class
             raise CannotGetAuthorizables, "Invalid argument: '#{authorizable_class}'. You must provide a class here."
           end
-          authorizable_class.find(
-            self.roles.find_all_by_authorizable_type(authorizable_class.base_class.to_s).map(&:authorizable_id).uniq
-          )
+          begin
+            authorizable_class.find(
+              self.roles.find_all_by_authorizable_type(authorizable_class.base_class.to_s).map(&:authorizable_id).uniq
+            )
+          rescue ActiveRecord::RecordNotFound
+            []
+          end
         end
 
         private
