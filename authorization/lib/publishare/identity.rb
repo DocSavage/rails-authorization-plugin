@@ -99,7 +99,7 @@ module Authorization
       module InstanceMethods
 
         def users
-          users = self.accepted_roles.collect { |role| role.users }
+          users = self.accepted_roles.find(:all, :include => :users).collect { |role| role.users }
           users.flatten.compact.uniq if users
         end
 
