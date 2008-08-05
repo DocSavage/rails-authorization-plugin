@@ -44,10 +44,7 @@ module Authorization
 
         def has_no_role( role_name, authorizable_obj = nil  )
           role = get_role( role_name, authorizable_obj )
-          if role
-            self.roles.delete( role )
-            role.destroy if role.users.empty?
-          end
+          delete_role( role )
         end
 
         def has_roles_for?( authorizable_obj )
@@ -69,6 +66,14 @@ module Authorization
           else
             self.roles.select { |role| role.authorizable.nil? }
           end
+        end
+
+        def has_no_roles_for(authorizable_obj = nil)
+          roles_for(authorizable_obj).each { |role| delete_role( role ) }
+        end
+
+        def has_no_roles
+          self.roles.each { |role| delete_role( role ) }
         end
 
         def authorizables_for( authorizable_class )
@@ -100,6 +105,13 @@ module Authorization
           end
         end
 
+        def delete_role( role ) 
+          if role
+            self.roles.delete( role )
+            role.destroy if role.users.empty?
+          end
+        end
+
       end
     end
 
@@ -111,6 +123,8 @@ module Authorization
       module ClassMethods
         def acts_as_authorizable
           has_many :accepted_roles, :as => :authorizable, :class_name => 'Role', :dependent => :destroy
+
+          has_many :users, :finder_sql => 'SELECT DISTINCT users.* FROM users INNER JOIN roles_users ON user_id = users.id INNER JOIN roles ON roles.id = role_id WHERE authorizable_type = \'#{self.class.base_class.to_s}\' AND authorizable_id = #{id}', :counter_sql => 'SELECT COUNT(DISTINCT users.id) FROM users INNER JOIN roles_users ON user_id = users.id INNER JOIN roles ON roles.id = role_id WHERE authorizable_type = \'#{self.class.base_class.to_s}\' AND authorizable_id = #{id}', :readonly => true
 
           def accepts_role?( role_name, user )
             user.has_role? role_name, self
