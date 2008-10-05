@@ -89,12 +89,17 @@ as a Git sub-module, or by grabbing a tarball.
 
 === Step 2a (Standard install, recommended)
 
+NOTE : This assumes you are using a current (Rails 2.1.x +) version of Rails which
+now has built in support for installing a plugin directly from a git repo.  This also assumes
+you have Git installed and working properly.  You can always use the manual install shown below
+if this is not true.
+
 Run the following command in your RAILS_ROOT:
 
-  ./script/plugin install http://rails-authorization-plugin.googlecode.com/svn/trunk/authorization
+  ./script/plugin install git://github.com/DocSavage/rails-authorization-plugin.git
 
-This will install the latest version of the plugin from SVN trunk
-into your RAILS_ROOT/vendor/plugins/authorization directory.
+This will install the latest version of the plugin from our GitHub master repo
+into your RAILS_ROOT/vendor/plugins/rails-authorization-plugin directory.
 
 === Step 2b (Alternative install using Git sub-module, for advanced users of the Git SCM)
 
@@ -123,11 +128,13 @@ the simple command (again from RAILS_ROOT):
 
 === Step 2c (Alternative manual install from tarball)
 
-If you like to install the old school manual way, feel free to download a copy of the plugin code from:
+If you like to install the old school manual way, feel free to download a copy of
+latest master branch plugin code from:
 
 http://github.com/docsavage/rails-authorization-plugin/tarball/master
 
-Once downloaded, you can unpack that file in your RAILS_ROOT/vendor/plugins directory.
+Once downloaded, rename the top level dir to 'rails-authorization-plugin' and then
+you can stuff that directory in your RAILS_ROOT/vendor/plugins directory.
 
 
 == Configuration
