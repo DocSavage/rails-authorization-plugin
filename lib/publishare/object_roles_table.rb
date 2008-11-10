@@ -111,7 +111,7 @@ module Authorization
         end
 
         def delete_role_if_empty( role )
-          role.destroy if role && role.users.empty?
+          role.destroy if role && role.users.count == 0
         end
 
       end
