@@ -11,7 +11,7 @@ module Authorization
 
       module ClassMethods
         def acts_as_authorized_user(roles_relationship_opts = {})
-          has_many :roles_users
+          has_many :roles_users, :dependent => :delete_all
           has_many :roles, :through => :roles_users
           include Authorization::ObjectRolesTable::UserExtensions::InstanceMethods
           include Authorization::Identity::UserExtensions::InstanceMethods   # Provides all kinds of dynamic sugar via method_missing
@@ -125,9 +125,11 @@ module Authorization
 
       module ClassMethods
         def acts_as_authorizable
-          has_many :accepted_roles, :as => :authorizable, :class_name => 'Role', :dependent => :destroy
+          has_many :accepted_roles, :as => :authorizable, :class_name => 'Role'
 
           has_many :users, :finder_sql => 'SELECT DISTINCT users.* FROM users INNER JOIN roles_users ON user_id = users.id INNER JOIN roles ON roles.id = role_id WHERE authorizable_type = \'#{self.class.base_class.to_s}\' AND authorizable_id = #{id}', :counter_sql => 'SELECT COUNT(DISTINCT users.id) FROM users INNER JOIN roles_users ON user_id = users.id INNER JOIN roles ON roles.id = role_id WHERE authorizable_type = \'#{self.class.base_class.to_s}\' AND authorizable_id = #{id}', :readonly => true
+
+          before_destroy :remove_user_roles
 
           def accepts_role?( role_name, user )
             user.has_role? role_name, self
@@ -180,6 +182,15 @@ module Authorization
 
         def accepted_roles_by( user )
           user.roles_for self
+        end
+
+        private
+
+        def remove_user_roles
+          self.accepted_roles.each do |role|
+            role.roles_users.delete_all
+            role.destroy
+          end
         end
 
       end
