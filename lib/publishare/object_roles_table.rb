@@ -44,7 +44,8 @@ module Authorization
 
         def has_no_role( role_name, authorizable_obj = nil  )
           role = get_role( role_name, authorizable_obj )
-          delete_role( role )
+          self.roles.delete( role )
+          delete_role_if_empty( role )
         end
 
         def has_roles_for?( authorizable_obj )
@@ -69,11 +70,15 @@ module Authorization
         end
 
         def has_no_roles_for(authorizable_obj = nil)
-          roles_for(authorizable_obj).each { |role| delete_role( role ) }
+          old_roles = roles_for(authorizable_obj).dup
+          roles_for(authorizable_obj).destroy_all
+          old_roles.each { |role| delete_role_if_empty( role ) }
         end
 
         def has_no_roles
-          self.roles.each { |role| delete_role( role ) }
+          old_roles = self.roles.dup
+          self.roles.destroy_all
+          old_roles.each { |role| delete_role_if_empty( role ) }
         end
 
         def authorizables_for( authorizable_class )
@@ -105,11 +110,8 @@ module Authorization
           end
         end
 
-        def delete_role( role ) 
-          if role
-            self.roles.delete( role )
-            role.destroy if role.users.empty?
-          end
+        def delete_role_if_empty( role )
+          role.destroy if role.users.empty?
         end
 
       end
