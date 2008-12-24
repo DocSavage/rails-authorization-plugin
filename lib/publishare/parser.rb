@@ -39,8 +39,8 @@ module Authorization
         expr = replace_role_of_model( expr )
         begin
           instance_eval( expr )
-        rescue
-          raise AuthorizationExpressionInvalid, "Cannot parse authorization (#{str})"
+        rescue Exception => error
+          raise AuthorizationExpressionInvalid, "Cannot parse authorization (#{str}): #{error.message}"
         end
       end
 
