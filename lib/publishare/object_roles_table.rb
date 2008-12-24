@@ -44,7 +44,7 @@ module Authorization
 
         def has_no_role( role_name, authorizable_obj = nil  )
           role = get_role( role_name, authorizable_obj )
-          self.roles.delete( role )
+          self.roles.delete( role ) if role
           delete_role_if_empty( role )
         end
 
@@ -111,7 +111,7 @@ module Authorization
         end
 
         def delete_role_if_empty( role )
-          role.destroy if role.users.empty?
+          role.destroy if role && role.users.empty?
         end
 
       end

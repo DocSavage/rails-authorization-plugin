@@ -115,6 +115,8 @@ module Authorization
           end
         end
 
+        private
+
         def roles_array_from(string)
           roles = string.split('_or_').collect { |role| role.singularize }
           roles.flatten.compact
