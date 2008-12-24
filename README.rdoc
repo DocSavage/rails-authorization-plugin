@@ -500,6 +500,13 @@ Roles specified with "of model" designation:
    in the manner above) to <tt>model.accepts_role?</tt>
 
 
+== Upgrading
+
+When upgrading this plugin, please refer to the following file:
+
+http://github.com/DocSavage/rails-authorization-plugin/tree/master/UPGRADE.rdoc
+
+
 == Developers Note : Contributing Patches
 
 Please see the file README_developers.txt for the methods we would like you to use to submit new code features, bugfixes and patches.
