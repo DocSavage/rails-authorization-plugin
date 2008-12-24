@@ -13,9 +13,10 @@ class RoleModelGenerator < Rails::Generator::NamedBase
       m.directory File.join('test/fixtures', class_path)
 
       # Model class, unit test, and fixtures.
-      m.template 'model.rb',      File.join('app/models', class_path, "#{file_name}.rb")
-      m.template 'unit_test.rb',  File.join('test/unit', class_path, "#{file_name}_test.rb")
-      m.template 'fixtures.yml',  File.join('test/fixtures', class_path, "#{table_name}.yml")
+      m.template 'role_model.rb',      File.join('app/models', class_path, "#{file_name}.rb")
+      m.template 'role_user_model.rb', File.join('app/models', class_path, "#{(file_name < 'user') ? "#{file_name}_user" : "user_#{file_name}"}.rb")
+      m.template 'unit_test.rb',       File.join('test/unit', class_path, "#{file_name}_test.rb")
+      m.template 'fixtures.yml',       File.join('test/fixtures', class_path, "#{table_name}.yml")
       
       unless options[:skip_migration]
         m.migration_template 'migration.rb', 'db/migrate', :assigns => {
