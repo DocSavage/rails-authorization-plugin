@@ -101,17 +101,29 @@ module Authorization
         def method_missing( method_sym, *args )
           method_name = method_sym.to_s
           if method_name =~ /^has_(\w+)\?$/
-            roles = $1.split('_or_').collect { |role| role.singularize }
-            roles = roles.flatten.compact
-            self.accepted_roles.find_all_by_name(roles, :include => :users).any? { |role| role.users.compact.any? }
+            roles = roles_array_from($1)
+            user_count_of(roles) > 0
+          elsif method_name =~ /^has_(\w+)_count$/
+            roles = roles_array_from($1)
+            user_count_of(roles)
           elsif method_name =~ /^has_(\w+)$/
-            roles = $1.split('_or_').collect { |role| role.singularize }
-            roles = roles.flatten.compact
+            roles = roles_array_from($1)
             users = self.accepted_roles.find_all_by_name(roles, :include => :users).collect { |role| role.users }
             users.flatten.compact.uniq if users
           else
             super
           end
+        end
+
+        def roles_array_from(string)
+          roles = string.split('_or_').collect { |role| role.singularize }
+          roles.flatten.compact
+        end
+
+        def user_count_of(roles)
+          count = 0
+          self.accepted_roles.find_all_by_name(roles).each { |role| count += role.users.count }
+          count
         end
 
       end
