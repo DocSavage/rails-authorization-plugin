@@ -7,5 +7,7 @@ Scroll down to the last time you updated the plugin, then follow the upgrade ste
 * Copy generators/role_model/templates/role_model.rb to app/models/role.rb
 * Copy generators/role_model/templates/role_user_model.rb to app/models/role_user.rb
 * Open each file and replace the erb code (<%= %>) with the correct model class name below
+
   role.rb         ->    Role
+
   role_user.rb    ->    RoleUser
