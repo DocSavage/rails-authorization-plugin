@@ -135,6 +135,8 @@ module Authorization
             @options[model_symbol]
           elsif instance_variables.include?( '@'+model_name )
             instance_variable_get( '@'+model_name )
+          elsif respond_to?(model_symbol)
+            send(model_symbol)
           # Note -- while the following code makes autodiscovery more convenient, it's a little too much side effect & security question
           # elsif self.params[:id]
           #  eval_str = model_name.camelize + ".find(#{self.params[:id]})"
