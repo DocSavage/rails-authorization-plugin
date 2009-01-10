@@ -1,7 +1,7 @@
 class <%= migration_name %> < ActiveRecord::Migration
 
   def self.up
-    create_table :<%= (table_name < 'users') ? "#{table_name}_users" : "users_#{table_name}" %>, :id => false, :force => true  do |t|
+    create_table :<%= (table_name < 'users') ? "#{singular_name}_users" : "user_#{table_name}" %>, :id => false, :force => true  do |t|
       t.integer :user_id, :<%= singular_name %>_id
       t.timestamps
     end
@@ -15,7 +15,7 @@ class <%= migration_name %> < ActiveRecord::Migration
 
   def self.down
     drop_table :<%= table_name %>
-    drop_table :<%= (table_name < 'users') ? "#{table_name}_users" : "users_#{table_name}" %>
+    drop_table :<%= (table_name < 'users') ? "#{singular_name}_users" : "user_#{table_name}" %>
   end
 
 end
