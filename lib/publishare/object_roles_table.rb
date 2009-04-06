@@ -72,13 +72,13 @@ module Authorization
 
         def has_no_roles_for(authorizable_obj = nil)
           old_roles = roles_for(authorizable_obj).dup
-          roles_for(authorizable_obj).destroy_all
+          self.roles.delete(old_roles)
           old_roles.each { |role| delete_role_if_empty( role ) }
         end
 
         def has_no_roles
           old_roles = self.roles.dup
-          self.roles.destroy_all
+          self.roles.clear
           old_roles.each { |role| delete_role_if_empty( role ) }
         end
 
