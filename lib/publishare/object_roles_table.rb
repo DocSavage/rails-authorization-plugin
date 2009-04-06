@@ -62,9 +62,11 @@ module Authorization
 
         def roles_for( authorizable_obj )
           if authorizable_obj.is_a? Class
-            self.roles.select { |role| role.authorizable_type == authorizable_obj.to_s }
+            self.roles.find(:all, :conditions => { :authorizable_type => authorizable_obj.to_s})
           elsif authorizable_obj
-            self.roles.select { |role| role.authorizable_type == authorizable_obj.class.base_class.to_s && role.authorizable.id == authorizable_obj.id }
+            self.roles.find(:all, :conditions => {
+                              :authorizable_type => authorizable_obj.class.base_class.to_s, 
+                              :authorizable_id => authorizable_obj.id })
           else
             self.roles.select { |role| role.authorizable.nil? }
           end
