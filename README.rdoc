@@ -1,3 +1,5 @@
+    NOTE: This repository is historical and not actively maintained. Please seek out alternatives or an active fork.
+
 = Authorization plugin
 
 This plugin provides a flexible way to add authorization to Rails.
